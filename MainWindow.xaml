@@ -1,0 +1,160 @@
+﻿<Window x:Class="FTPcontentManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FTPcontentManager"
+        mc:Ignorable="d"
+        Title="FTP Content Manager" Height="720" Width="800"
+		Icon="pack://application:,,,/Resources/app.png"
+        Background="#1e1e1e"
+        WindowStartupLocation="CenterScreen">
+	<Window.Resources>
+		<!-- Dark Mode Colors -->
+		<SolidColorBrush x:Key="WindowBackground" Color="#1e1e1e"/>
+		<SolidColorBrush x:Key="ControlBackground" Color="#232323"/>
+		<SolidColorBrush x:Key="ControlForeground" Color="#f3f3f3"/>
+		<SolidColorBrush x:Key="AccentBrush" Color="#FF00D721"/>
+		<SolidColorBrush x:Key="HoverBrush" Color="#FF2E7D32"/>
+		<SolidColorBrush x:Key="SelectedBrush" Color="#FF005A1E"/>
+
+		<Style TargetType="Label">
+			<Setter Property="Foreground" Value="{StaticResource ControlForeground}"/>
+		</Style>
+		<Style TargetType="TextBox">
+			<Setter Property="Background" Value="{StaticResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{StaticResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+			<Setter Property="CaretBrush" Value="{StaticResource AccentBrush}"/>
+		</Style>
+		<Style TargetType="PasswordBox">
+			<Setter Property="Background" Value="{StaticResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{StaticResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+			<Setter Property="CaretBrush" Value="{StaticResource AccentBrush}"/>
+		</Style>
+		<Style TargetType="Button">
+			<Setter Property="Background" Value="{StaticResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{StaticResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
+							<ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Background" Value="{StaticResource HoverBrush}"/>
+					<Setter Property="Foreground" Value="White"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+		<Style TargetType="ListView">
+			<Setter Property="Background" Value="{StaticResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{StaticResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+		</Style>
+		<Style TargetType="ListViewItem">
+			<Setter Property="Background" Value="{StaticResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{StaticResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+			<Setter Property="Padding" Value="5"/>
+			<Setter Property="Margin" Value="2"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Background" Value="{StaticResource HoverBrush}"/>
+					<Setter Property="Foreground" Value="White"/>
+				</Trigger>
+				<Trigger Property="IsSelected" Value="True">
+					<Setter Property="Background" Value="{StaticResource SelectedBrush}"/>
+					<Setter Property="Foreground" Value="White"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+		<Style TargetType="GridViewColumnHeader">
+			<Setter Property="Background" Value="{StaticResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{StaticResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+			<Setter Property="Height" Value="24"/>
+			<Setter Property="Padding" Value="8,0"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="HorizontalContentAlignment" Value="Left"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="BorderThickness" Value="0,0,0,2"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="GridViewColumnHeader">
+						<Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              Margin="{TemplateBinding Padding}"
+                                              RecognizesAccessKey="True"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Background" Value="{StaticResource HoverBrush}"/>
+					<Setter Property="Foreground" Value="White"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+	</Window.Resources>
+
+	<Grid Background="{StaticResource WindowBackground}">
+		<StackPanel Orientation="Vertical" Margin="10,10,10,0">
+			<!-- Connection Fields -->
+			<StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,8">
+				<Label Content="IP Address:" Width="70" VerticalAlignment="Center"/>
+				<TextBox Name="ip" Width="120" Height="22" Margin="0,0,10,0"/>
+				<Label Content="Username:" Width="67" VerticalAlignment="Center"/>
+				<TextBox Name="username" Width="120" Height="22" Margin="0,0,10,0"/>
+				<Label Content="Password:" Width="66" VerticalAlignment="Center"/>
+				<PasswordBox Name="password" Width="120" Height="22" Margin="0,0,10,0"/>
+				<Button x:Name="Connect" Content="Connect" Width="65" Height="24" Click="Connect_Click"/>
+			</StackPanel>
+			<Label x:Name="lbl_url" Content="ftp://" Foreground="{DynamicResource ControlForeground}" Height="26" Margin="0,0,0,8"/>
+		</StackPanel>
+
+		<Grid Margin="18,70,277,74">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto" MinWidth="0"/>
+			</Grid.ColumnDefinitions>
+
+			<!-- ListView and Back Button Overlay -->
+			<ListView x:Name="filelist" MouseDoubleClick="filelist_MouseDoubleClick" Margin="0,0,-192,0" Grid.ColumnSpan="2" AllowDrop="True" Drop="Filelist_Drop" DragOver="Filelist_DragOver">
+				<ListView.View>
+					<GridView>
+						<GridViewColumn Header="Icon">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<Image Source="{Binding Icon}" Width="24" Height="24" Stretch="Uniform"/>
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
+						<GridViewColumn Header="Name" DisplayMemberBinding="{Binding DisplayName}" Width="Auto"/>
+						<GridViewColumn Header="Size" DisplayMemberBinding="{Binding Size}" Width="100"/>
+						<GridViewColumn Header="Last Modified" DisplayMemberBinding="{Binding LastModified}" Width="Auto"/>
+					</GridView>
+				</ListView.View>
+			</ListView>
+		</Grid>
+	</Grid>
+</Window>
