@@ -1,0 +1,100 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:FTPcontentManager.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:FTPcontentManager.Views"
+		xmlns:ftp="clr-namespace:FluentFTP;assembly=FluentFTP"
+        mc:Ignorable="d"
+        x:Class="FTPcontentManager.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="FTP Content Manager"
+        Width="800"
+        Height="720"
+        Icon="/Assets/app.png"
+        Background="#1e1e1e"
+        WindowStartupLocation="CenterScreen">
+	<Window.Resources>
+		<SolidColorBrush x:Key="WindowBackground" Color="#1e1e1e"/>
+		<SolidColorBrush x:Key="ControlBackground" Color="#232323"/>
+		<SolidColorBrush x:Key="ControlForeground" Color="#f3f3f3"/>
+		<SolidColorBrush x:Key="AccentBrush" Color="#FF00D721"/>
+		<SolidColorBrush x:Key="HoverBrush" Color="#FF2E7D32"/>
+		<SolidColorBrush x:Key="SelectedBrush" Color="#FF005A1E"/>
+		<views:IconKeyToBitmapConverter x:Key="IconKeyToBitmapConverter"/>
+	</Window.Resources>
+	<Window.Styles>
+		<Style Selector="Label">
+			<Setter Property="Foreground" Value="{DynamicResource ControlForeground}"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="{DynamicResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{DynamicResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+			<Setter Property="CaretBrush" Value="{DynamicResource AccentBrush}"/>
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="{DynamicResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{DynamicResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="CornerRadius" Value="3"/>
+		</Style>
+		<Style Selector="ListBox">
+			<Setter Property="Background" Value="{DynamicResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{DynamicResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+		</Style>
+		<Style Selector="ListBoxItem">
+			<Setter Property="Background" Value="{DynamicResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{DynamicResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+			<Setter Property="Padding" Value="5"/>
+			<Setter Property="Margin" Value="2"/>
+			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+		</Style>
+	</Window.Styles>
+
+	<Grid Background="{DynamicResource WindowBackground}">
+		<StackPanel Orientation="Vertical" Margin="10,10,10,0">
+			<!-- Connection Fields -->
+			<StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,0">
+				<Label Content="IP Address:" VerticalAlignment="Center"/>
+				<TextBox Name="ip" Height="22" Margin="0,0,10,0"/>
+				<Label Content="Username:" VerticalAlignment="Center"/>
+				<TextBox Name="username" Height="22" Margin="0,0,10,0"/>
+				<Label Content="Password:" VerticalAlignment="Center"/>
+				<TextBox Name="password" Height="22" Margin="0,0,10,0"/>
+				<Button Name="Connect" Content="Connect" Click="Connect_Click"/>
+			</StackPanel>
+			<Label Name="lbl_url" Content="ftp://" Foreground="{DynamicResource ControlForeground}" Margin="8,0,0,0"/>
+		</StackPanel>
+
+		<Grid Margin="18,70,277,74">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto" MinWidth="0"/>
+			</Grid.ColumnDefinitions>
+
+			<!-- ListBox and Back Button Overlay -->
+			<ListBox Name="window_filelist"
+                     Grid.ColumnSpan="2"
+                     DragDrop.AllowDrop="True"
+                     DoubleTapped="Filelist_DoubleTapped"
+                     DragDrop.Drop="Filelist_Drop"
+                     DragDrop.DragOver="Filelist_DragOver">
+				<ListBox.ItemTemplate>
+					<DataTemplate DataType="{x:Type ftp:FtpListItem}">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Image Source="" Width="24" Height="24" Stretch="Uniform"/>
+							<TextBlock Text="{Binding Name}" Width="300"/>
+							<TextBlock Text="{Binding Size}" Width="50"/>
+							<TextBlock Text="{Binding Modified}" Width="100"/>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Grid>
+	</Grid>
+</Window>
