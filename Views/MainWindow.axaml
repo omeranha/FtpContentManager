@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:FTPcontentManager.Views"
-		xmlns:ftp="clr-namespace:FluentFTP;assembly=FluentFTP"
         mc:Ignorable="d"
         x:Class="FTPcontentManager.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -21,7 +20,6 @@
 		<SolidColorBrush x:Key="AccentBrush" Color="#FF00D721"/>
 		<SolidColorBrush x:Key="HoverBrush" Color="#FF2E7D32"/>
 		<SolidColorBrush x:Key="SelectedBrush" Color="#FF005A1E"/>
-		<views:IconKeyToBitmapConverter x:Key="IconKeyToBitmapConverter"/>
 	</Window.Resources>
 	<Window.Styles>
 		<Style Selector="Label">
@@ -55,42 +53,56 @@
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
 		</Style>
 	</Window.Styles>
-
 	<Grid Background="{DynamicResource WindowBackground}">
 		<StackPanel Orientation="Vertical" Margin="10,10,10,0">
 			<!-- Connection Fields -->
-			<StackPanel Orientation="Horizontal" VerticalAlignment="Top" Margin="0,0,0,0">
+			<StackPanel Orientation="Horizontal" VerticalAlignment="Top">
 				<Label Content="IP Address:" VerticalAlignment="Center"/>
 				<TextBox Name="ip" Height="22" Margin="0,0,10,0"/>
 				<Label Content="Username:" VerticalAlignment="Center"/>
-				<TextBox Name="username" Height="22" Margin="0,0,10,0"/>
+				<TextBox Name="username" Text="xboxftp" Height="22" Margin="0,0,10,0"/>
 				<Label Content="Password:" VerticalAlignment="Center"/>
-				<TextBox Name="password" Height="22" Margin="0,0,10,0"/>
+				<TextBox Name="password" Height="22" Margin="0,0,10,0" PasswordChar="*"/>
+				<Label Content="Port:" VerticalAlignment="Center"/>
+				<TextBox Name="port" Height="22" Margin="0,0,10,0" Text="21"/>
 				<Button Name="Connect" Content="Connect" Click="Connect_Click"/>
 			</StackPanel>
-			<Label Name="lbl_url" Content="ftp://" Foreground="{DynamicResource ControlForeground}" Margin="8,0,0,0"/>
+			<Label Name="url" Foreground="{DynamicResource ControlForeground}" Margin="8,0,0,0"/>
 		</StackPanel>
 
-		<Grid Margin="18,70,277,74">
+		<Grid Margin="20,70,200,60">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition/>
 				<ColumnDefinition Width="Auto" MinWidth="0"/>
 			</Grid.ColumnDefinitions>
 
+			<!-- Column Headers Row -->
+			<StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="" Margin="0,0,0,2">
+				<TextBlock Text="" Width="32"/>
+				<TextBlock Text="Name" Width="300" FontWeight="Bold" Foreground="{DynamicResource ControlForeground}"/>
+				<TextBlock Text="Size" Width="100" FontWeight="Bold" Foreground="{DynamicResource ControlForeground}"/>
+				<TextBlock Text="Modified" Width="200" FontWeight="Bold" Foreground="{DynamicResource ControlForeground}"/>
+			</StackPanel>
+
 			<!-- ListBox and Back Button Overlay -->
 			<ListBox Name="window_filelist"
+                     Grid.Row="1"
                      Grid.ColumnSpan="2"
                      DragDrop.AllowDrop="True"
                      DoubleTapped="Filelist_DoubleTapped"
                      DragDrop.Drop="Filelist_Drop"
                      DragDrop.DragOver="Filelist_DragOver">
 				<ListBox.ItemTemplate>
-					<DataTemplate DataType="{x:Type ftp:FtpListItem}">
+					<DataTemplate DataType="{x:Type views:FileListItem}">
 						<StackPanel Orientation="Horizontal" Spacing="8">
-							<Image Source="" Width="24" Height="24" Stretch="Uniform"/>
-							<TextBlock Text="{Binding Name}" Width="300"/>
-							<TextBlock Text="{Binding Size}" Width="50"/>
-							<TextBlock Text="{Binding Modified}" Width="100"/>
+							<Image Source="{Binding Icon}" Width="24" Height="24" Stretch="Uniform"/>
+							<TextBlock Text="{Binding DisplayName}" Width="300"/>
+							<TextBlock Text="{Binding DisplaySize}" Width="100"/>
+							<TextBlock Text="{Binding DisplayDate}" Width="200"/>
 						</StackPanel>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
