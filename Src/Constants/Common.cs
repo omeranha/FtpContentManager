@@ -2,9 +2,23 @@ using System;
 
 namespace FTPcontentManager.Src.Constants
 {
-	/// <summary>
-	/// Setting entry type enumeration
-	/// </summary>
+	public static class Offsets
+	{
+		public static readonly uint[] DataBlocksPerHashTreeLevel = new uint[] { 1, 0xAA, 0x70E4 };
+	}
+
+	public enum EntryType
+	{
+		Unknown = 0,
+		Achievement = 1,
+		Image = 2,
+		Setting = 3,
+		Title = 4,
+		String = 5,
+		AvatarAward = 6,
+		MysteriousSeven = 7
+	}
+
 	public enum SettingEntryType
 	{
 		Context,
@@ -18,10 +32,7 @@ namespace FTPcontentManager.Src.Constants
 		Null = 0xFF
 	}
 
-	/// <summary>
-	/// Setting ID enumeration
-	/// </summary>
-	public enum SettingId : uint
+	public enum SettingId
 	{
 		WebConnectionSpeed = 0x1004200b,
 		WebEmailFormat = 0x10042000,
@@ -110,14 +121,56 @@ namespace FTPcontentManager.Src.Constants
 		AvatarImage = 0x8007
 	}
 
-	/// <summary>
-	/// Subscription tier enumeration
-	/// </summary>
-	public enum SubscriptionTier
+	public enum SkeletonVersion
 	{
-		None,
-		Silver,
-		Gold,
-		Family
+		Nxe = 1,
+		Natal,
+		NxeAndNatal
+	}
+
+	[Flags]
+	public enum ReservedFlags
+	{
+		Unknown = 1,
+		PasscodeEnabled = 0x10000000,
+		LiveEnabled = 0x20000000,
+		Recovering = 0x40000000
+	}
+
+	public enum OnlineContentResumeState
+	{
+		FileHeadersNotReady = 0x46494C48,
+		NewFolder = 0x666F6C64,
+		NewFolderResumeAttempt1 = 0x666F6C31,
+		NewFolderResumeAttempt2 = 0x666F6C32,
+		NewFolderResumeAttemptUnknown = 0x666F6C3F,
+		NewFolderResumeAttemptSpecific = 0x666F6C40
+	}
+
+	[Flags]
+	public enum AchievementLockFlags
+	{
+		UnlockedOnline = 0x10000,   //Indicates the achievement was achieved online.
+		Unlocked = 0x20000,		  //Indicates the achievement was achieved.
+		Visible = 0x8
+	}
+
+	public enum TitleEntryFlags
+	{
+		NeedsToBeSynced = 0x1,
+		ImageNeedsToBeDownloaded = 0x2,
+		AvatarAwardNeedsToBeDownloaded = 0x10
+	}
+
+	[Flags]
+	public enum TransferFlags
+	{
+		None = 0,
+		DeepLinkSupported = 4,
+		DisableNetworkStorage = 8,
+		KinectEnabled = 0x10,
+		MoveOnlyTransfer = 0x20,
+		DeviceTransfer = 0x40,
+		ProfileTransfer = 0x80
 	}
 }

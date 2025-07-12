@@ -1,7 +1,5 @@
-﻿namespace FTPcontentManager.Src.Models
-{
-	public class BinMapEntry
-	{
+﻿namespace FTPcontentManager.Src.Models {
+	public class BinMapEntry {
 		public int? Length { get; set; }
 		public int? BlockNum { get; set; }
 		public string PropertyName { get; set; }

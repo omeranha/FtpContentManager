@@ -1,16 +1,16 @@
 using System;
 
-namespace FTPcontentManager.Src.Stfs.Events
+namespace FTPcontentManager.Src.Readers.Stfs.Events
 {
-    public class DurationEventArgs : EventArgs
-    {
-        public string Description { get; private set; }
-        public TimeSpan Duration { get; private set; }
+	public class DurationEventArgs : EventArgs
+	{
+		public string Description { get; private set; }
+		public TimeSpan Duration { get; private set; }
 
-        public DurationEventArgs(string description, TimeSpan duration)
-        {
-            Description = description;
-            Duration = duration;
-        }
-    }
+		public DurationEventArgs(string description, TimeSpan duration)
+		{
+			Description = description;
+			Duration = duration;
+		}
+	}
 }

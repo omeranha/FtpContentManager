@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using FTPcontentManager.Src.Attributes;
 using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Gpd.Entries;
-using FTPcontentManager.Src.Stfs;
+using FTPcontentManager.Src.Readers.Gpd.Entries;
+using FTPcontentManager.Src.Readers.Stfs;
 using FTPcontentManager.Src.Models;
 using System.Linq;
 
-namespace FTPcontentManager.Src.Gpd
+namespace FTPcontentManager.Src.Readers.Gpd
 {
 	public abstract class GpdFile : BinaryModelBase
 	{

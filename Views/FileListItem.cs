@@ -1,89 +1,67 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Avalonia.Media.Imaging;
-using FluentFTP;
+using Avalonia.Platform;
 
 namespace FTPcontentManager.Views
 {
-	/// <summary>
-	/// Represents a file or directory item in the FTP file list.
-	/// </summary>
+	enum ItemType
+	{
+		File,
+		Directory,
+		Parent
+	}
+
 	internal class FileListItem : INotifyPropertyChanged
 	{
-		private FtpListItem _item;
-		/// <summary>
-		/// The underlying FTP list item.
-		/// </summary>
-		public FtpListItem Item
-		{
-			get => _item;
-			set => SetField(ref _item, value);
-		}
-
+		public string Name;
 		private string _displayName;
-		/// <summary>
-		/// The display name for the item.
-		/// </summary>
-		public string DisplayName
-		{
+		public string DisplayName {
 			get => _displayName;
-			set => SetField(ref _displayName, value);
+			set {
+				if (_displayName != value) {
+					_displayName = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DisplayName)));
+				}
+			}
 		}
-
-		/// <summary>
-		/// The formatted display size for the item.
-		/// </summary>
-		public string DisplaySize { get; }
-
-		/// <summary>
-		/// The formatted display date for the item.
-		/// </summary>
-		public string DisplayDate { get; }
-
+		public string Size { get; }
+		public string Date { get; }
+		public ItemType Type;
+		public string Path;
 		private Bitmap? _icon;
-		/// <summary>
-		/// The icon representing the item.
-		/// </summary>
-		public Bitmap? Icon
-		{
+		public Bitmap? Icon {
 			get => _icon;
-			set => SetField(ref _icon, value);
+			set {
+				if (_icon != value) {
+					_icon = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Icon)));
+				}
+			}
 		}
 
-		/// <summary>
-		/// The type of the FTP object.
-		/// </summary>
-		public FtpObjectType Type => Item.Type;
-
-		/// <summary>
-		/// Initializes a new instance of the <see cref="FileListItem"/> class.
-		/// </summary>
-		public FileListItem(FtpListItem item, string name, Bitmap? icon) {
-			_item = item ?? throw new ArgumentNullException(nameof(item));
-			_displayName = name ?? item.Name;
-			DisplaySize = name == "[..]" ? string.Empty : FormatSize(item.Size, item.Type == FtpObjectType.Directory);
-			DisplayDate = name == "[..]" ? string.Empty : $"{item.Modified.ToShortDateString()} {item.Modified.ToShortTimeString()}";
-			_icon = icon;
+		public FileListItem(string name, long size, string date, ItemType type, string path) {
+			Name = name;
+			_displayName = name;
+			Size = FormatSize(size, type == ItemType.File);
+			Date = date;
+			Type = type;
+			Path = path;
+			switch (type) {
+				case ItemType.File:
+					Icon = new(AssetLoader.Open(new Uri("avares://FTPcontentManager/Assets/file.png")));
+					break;
+				case ItemType.Directory:
+					Icon = new(AssetLoader.Open(new Uri("avares://FTPcontentManager/Assets/folder.png")));
+					break;
+				case ItemType.Parent:
+					Icon = new(AssetLoader.Open(new Uri("avares://FTPcontentManager/Assets/up.png")));
+					break;
+			}
 		}
 
-		public FileListItem(FtpListItem item) {
-			_item = item;
-			_displayName = item.Name;
-			DisplaySize = FormatSize(item.Size, item.Type == FtpObjectType.Directory);
-			DisplayDate = $"{item.Modified.ToShortDateString()} {item.Modified.ToShortTimeString()}";
-		}
-
-		/// <summary>
-		/// Returns the name of the item.
-		/// </summary>
-		public string GetName() => Item.Name;
-
-		/// <summary>
-		/// Formats the file size for display.
-		/// </summary>
-		private static string FormatSize(long bytes, bool isDirectory) {
-			if (isDirectory) return string.Empty;
+		private static string FormatSize(long bytes, bool isFile) {
+			if (!isFile) return string.Empty;
 			if (bytes < 1024) return $"{bytes} B";
 			double kb = bytes / 1024.0;
 			if (kb < 1024) return $"{kb:F1} KB";
@@ -94,15 +72,5 @@ namespace FTPcontentManager.Views
 		}
 
 		public event PropertyChangedEventHandler? PropertyChanged;
-
-		/// <summary>
-		/// Sets the field and raises PropertyChanged if the value changes.
-		/// </summary>
-		protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null) {
-			if (Equals(field, value)) return false;
-			field = value;
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-			return true;
-		}
 	}
 }

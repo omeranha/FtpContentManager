@@ -1,18 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FTPcontentManager.Src.Readers.Stfs;
 
-namespace FTPcontentManager.Src.Models
-{
-	public class OffsetTable
-	{
+namespace FTPcontentManager.Src.Models {
+	public class OffsetTable {
 		//TODO: nullterminateds should reset _size;
 		private int? _size;
-		public int Size 
-		{
-			get
-			{
+		public int Size {
+			get {
 				if (IsDynamic || !_size.HasValue) {
 					_size = Properties.Count == 0 ? 0 : Properties.Where(o => o.Value != null && o.Value.Length > 0).Sum(o => o.Value.Length);
 				}
@@ -22,19 +19,16 @@ namespace FTPcontentManager.Src.Models
 		private Dictionary<string, BinaryLocation> Properties { get; set; }
 		public bool IsDynamic { get; set; }
 
-		public List<string> Keys
-		{
+		public List<string> Keys {
 			get { return Properties.Keys.ToList(); }
 		}
 
-		public OffsetTable()
-		{
+		public OffsetTable() {
 			Properties = new Dictionary<string, BinaryLocation>();
 		}
 
-		public OffsetTable Clone(int shift)
-		{
-			var newTable = new OffsetTable {IsDynamic = IsDynamic};
+		public OffsetTable Clone(int shift) {
+			var newTable = new OffsetTable { IsDynamic = IsDynamic };
 			if (!IsDynamic) newTable._size = Size;
 			newTable.Properties = new Dictionary<string, BinaryLocation>();
 			foreach (var kvp in Properties) {
@@ -43,16 +37,14 @@ namespace FTPcontentManager.Src.Models
 			return newTable;
 		}
 
-		public void ShiftOffsets(int diff)
-		{
+		public void ShiftOffsets(int diff) {
 			var keys = Properties.Keys;
 			foreach (var key in keys.Where(key => Properties[key] != null)) {
 				Properties[key].Offset += diff;
 			}
 		}
 
-		public void ShiftOffsetsFrom(string propertyName, int diff)
-		{
+		public void ShiftOffsetsFrom(string propertyName, int diff) {
 			var keys = Properties.Keys;
 			var found = false;
 			foreach (var key in keys) {
@@ -62,16 +54,13 @@ namespace FTPcontentManager.Src.Models
 			}
 		}
 
-		public void MapOffsets(BinMap binMap, Type type)
-		{
-			foreach (var kvp in Properties.Where(kvp => kvp.Value != null))
-			{
+		public void MapOffsets(BinMap binMap, Type type) {
+			foreach (var kvp in Properties.Where(kvp => kvp.Value != null)) {
 				binMap.Add(kvp.Value.Offset, kvp.Value.Length, kvp.Key, type.Name);
 			}
 		}
 
-		public string Log()
-		{
+		public string Log() {
 			var sb = new StringBuilder();
 			foreach (var kvp in Properties.Where(kvp => kvp.Value != null)) {
 				sb.AppendLine(string.Format("0x{0,3:X3} 0x{1,3:X3} {2}", kvp.Value.Offset, kvp.Value.Length, kvp.Key));
@@ -79,20 +68,16 @@ namespace FTPcontentManager.Src.Models
 			return sb.ToString();
 		}
 
-		public void Add(string key, int offset, int length)
-		{
+		public void Add(string key, int offset, int length) {
 			Add(key, new BinaryLocation(offset, length));
 		}
 
-		public void Add(string key, BinaryLocation value)
-		{
+		public void Add(string key, BinaryLocation value) {
 			Properties.Add(key, value);
 		}
 
-		public BinaryLocation this[string key]
-		{
-			get
-			{
+		public BinaryLocation this[string key] {
+			get {
 				if (!Properties.ContainsKey(key))
 					throw new KeyNotFoundException(string.Format("Offset information of property {0} cannot be found", key));
 				return Properties[key];
@@ -100,8 +85,7 @@ namespace FTPcontentManager.Src.Models
 			set { Properties[key] = value; }
 		}
 
-		public bool Contains(string key)
-		{
+		public bool Contains(string key) {
 			return Properties.ContainsKey(key);
 		}
 	}

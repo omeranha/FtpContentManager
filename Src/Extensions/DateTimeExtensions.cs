@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace FTPcontentManager.Src.Extensions
-{
-	public static class DateTimeExtensions
-	{
-		public static int ToFatFileTime(this DateTime time)
-		{
+namespace FTPcontentManager.Src.Extensions {
+	public static class DateTimeExtensions {
+		public static int ToFatFileTime(this DateTime time) {
 			var y = 0;
 			y |= ((time.Year - 1980) & 0xEF) << 25;
 			y |= (time.Month & 0xF) << 21;
@@ -17,13 +14,11 @@ namespace FTPcontentManager.Src.Extensions
 			return y;
 		}
 
-		public static double ToUnixTimestamp(this DateTime time)
-		{
+		public static double ToUnixTimestamp(this DateTime time) {
 			return Math.Floor((time - new DateTime(1970, 1, 1).ToLocalTime()).TotalSeconds);
 		}
 
-		public static DateTime FromFatFileTime(int time)
-		{
+		public static DateTime FromFatFileTime(int time) {
 			var year = (int)((time & 0xFE000000) >> 25) + 1980;
 			var month = (time & 0x1E00000) >> 21;
 			var day = (time & 0x1F0000) >> 16;

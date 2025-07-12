@@ -17,9 +17,9 @@
 		<SolidColorBrush x:Key="WindowBackground" Color="#1e1e1e"/>
 		<SolidColorBrush x:Key="ControlBackground" Color="#232323"/>
 		<SolidColorBrush x:Key="ControlForeground" Color="#f3f3f3"/>
-		<SolidColorBrush x:Key="AccentBrush" Color="#FF00D721"/>
-		<SolidColorBrush x:Key="HoverBrush" Color="#FF2E7D32"/>
-		<SolidColorBrush x:Key="SelectedBrush" Color="#FF005A1E"/>
+		<SolidColorBrush x:Key="AccentBrush" Color="#2e7d32"/>
+		<SolidColorBrush x:Key="HoverBrush" Color="#00d721"/>
+		<SolidColorBrush x:Key="SelectedBrush" Color="#005a1e"/>
 	</Window.Resources>
 	<Window.Styles>
 		<Style Selector="Label">
@@ -30,6 +30,9 @@
 			<Setter Property="Foreground" Value="{DynamicResource ControlForeground}"/>
 			<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
 			<Setter Property="CaretBrush" Value="{DynamicResource AccentBrush}"/>
+		</Style>
+			<Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+			<Setter Property="BorderBrush" Value="{DynamicResource HoverBrush}"/>
 		</Style>
 		<Style Selector="Button">
 			<Setter Property="Background" Value="{DynamicResource ControlBackground}"/>
@@ -55,22 +58,10 @@
 	</Window.Styles>
 	<Grid Background="{DynamicResource WindowBackground}">
 		<StackPanel Orientation="Vertical" Margin="10,10,10,0">
-			<!-- Connection Fields -->
-			<StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-				<Label Content="IP Address:" VerticalAlignment="Center"/>
-				<TextBox Name="ip" Height="22" Margin="0,0,10,0"/>
-				<Label Content="Username:" VerticalAlignment="Center"/>
-				<TextBox Name="username" Text="xboxftp" Height="22" Margin="0,0,10,0"/>
-				<Label Content="Password:" VerticalAlignment="Center"/>
-				<TextBox Name="password" Height="22" Margin="0,0,10,0" PasswordChar="*"/>
-				<Label Content="Port:" VerticalAlignment="Center"/>
-				<TextBox Name="port" Height="22" Margin="0,0,10,0" Text="21"/>
-				<Button Name="Connect" Content="Connect" Click="Connect_Click"/>
-			</StackPanel>
-			<Label Name="url" Foreground="{DynamicResource ControlForeground}" Margin="8,0,0,0"/>
+			<Label Name="url" Content="/" Foreground="{DynamicResource ControlForeground}" Margin="8,0,0,0"/>
 		</StackPanel>
 
-		<Grid Margin="20,70,200,60">
+		<Grid Margin="20,40,200,60">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*"/>
@@ -80,29 +71,22 @@
 				<ColumnDefinition Width="Auto" MinWidth="0"/>
 			</Grid.ColumnDefinitions>
 
-			<!-- Column Headers Row -->
 			<StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="" Margin="0,0,0,2">
 				<TextBlock Text="" Width="32"/>
 				<TextBlock Text="Name" Width="300" FontWeight="Bold" Foreground="{DynamicResource ControlForeground}"/>
 				<TextBlock Text="Size" Width="100" FontWeight="Bold" Foreground="{DynamicResource ControlForeground}"/>
 				<TextBlock Text="Modified" Width="200" FontWeight="Bold" Foreground="{DynamicResource ControlForeground}"/>
+				<Button Name="Settings" Content="Settings" Click="Settings_Click"/>
 			</StackPanel>
-
-			<!-- ListBox and Back Button Overlay -->
-			<ListBox Name="window_filelist"
-                     Grid.Row="1"
-                     Grid.ColumnSpan="2"
-                     DragDrop.AllowDrop="True"
-                     DoubleTapped="Filelist_DoubleTapped"
-                     DragDrop.Drop="Filelist_Drop"
-                     DragDrop.DragOver="Filelist_DragOver">
+			<ListBox Name="window_filelist" Grid.Row="1" Grid.ColumnSpan="2" DragDrop.AllowDrop="True"
+				DoubleTapped="Filelist_DoubleTapped" DragDrop.Drop="Filelist_Drop" DragDrop.DragOver="Filelist_DragOver">
 				<ListBox.ItemTemplate>
 					<DataTemplate DataType="{x:Type views:FileListItem}">
 						<StackPanel Orientation="Horizontal" Spacing="8">
 							<Image Source="{Binding Icon}" Width="24" Height="24" Stretch="Uniform"/>
 							<TextBlock Text="{Binding DisplayName}" Width="300"/>
-							<TextBlock Text="{Binding DisplaySize}" Width="100"/>
-							<TextBlock Text="{Binding DisplayDate}" Width="200"/>
+							<TextBlock Text="{Binding Size}" Width="100"/>
+							<TextBlock Text="{Binding Date}" Width="200"/>
 						</StackPanel>
 					</DataTemplate>
 				</ListBox.ItemTemplate>

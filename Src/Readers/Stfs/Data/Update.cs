@@ -1,19 +1,19 @@
-﻿using System;
+using System;
 using FTPcontentManager.Src.Attributes;
 using FTPcontentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Stfs.Data
+namespace FTPcontentManager.Src.Readers.Stfs.Data
 {
-    public class Update : BinaryModelBase, IInstallerInformation
-    {
-        [BinaryData(4)]
-        public virtual Version BaseVersion { get; set; }
+	public class Update : BinaryModelBase, IInstallerInformation
+	{
+		[BinaryData(4)]
+		public virtual Version BaseVersion { get; set; }
 
-        [BinaryData(4)]
-        public virtual Version Version { get; set; }
+		[BinaryData(4)]
+		public virtual Version Version { get; set; }
 
-        public Update(OffsetTable offsetTable, BinaryContainer binary, int startOffset) : base(offsetTable, binary, startOffset)
-        {
-        }
-    }
+		public Update(OffsetTable offsetTable, BinaryContainer binary, int startOffset) : base(offsetTable, binary, startOffset)
+		{
+		}
+	}
 }

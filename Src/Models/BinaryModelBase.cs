@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
@@ -8,11 +8,9 @@ using FTPcontentManager.Src.Constants;
 using FTPcontentManager.Src.Extensions;
 using System.Linq;
 
-namespace FTPcontentManager.Src.Models
-{
-	public abstract class BinaryModelBase : IBinaryModel
-	{
-		public static readonly Type BaseType = typeof (BinaryModelBase);
+namespace FTPcontentManager.Src.Models {
+	public abstract class BinaryModelBase : IBinaryModel {
+		public static readonly Type BaseType = typeof(BinaryModelBase);
 
 		private readonly OffsetTable _offsetTable;
 		private bool _cacheEnabled;
@@ -21,21 +19,17 @@ namespace FTPcontentManager.Src.Models
 
 		public BinaryContainer Binary { get; set; }
 		public int StartOffset { get; set; }
-		public virtual int BinarySize
-		{
+		public virtual int BinarySize {
 			get { return Binary.Length; }
 		}
 
-		public int OffsetTableSize
-		{
+		public int OffsetTableSize {
 			get { return _offsetTable.Size; }
 		}
 
-		public bool CacheEnabled
-		{
+		public bool CacheEnabled {
 			get { return _cacheEnabled; }
-			set
-			{
+			set {
 				_cacheEnabled = value;
 				if (value) Cache = new Dictionary<string, object>();
 			}
@@ -43,8 +37,7 @@ namespace FTPcontentManager.Src.Models
 
 		internal Dictionary<string, object> Cache { get; set; }
 
-		protected BinaryModelBase(OffsetTable offsetTable, BinaryContainer binary, int startOffset)
-		{
+		protected BinaryModelBase(OffsetTable offsetTable, BinaryContainer binary, int startOffset) {
 			CacheEnabled = true;
 			_offsetTable = offsetTable;
 			StartOffset = startOffset;
@@ -61,23 +54,19 @@ namespace FTPcontentManager.Src.Models
 			if (binary != null) offsetTable.MapOffsets(BinMap, GetType().BaseType);
 		}
 
-		public int GetPropertyOffset(string propertyName)
-		{
+		public int GetPropertyOffset(string propertyName) {
 			return _offsetTable[propertyName].Offset;
 		}
 
-		public T ReadPropertyValue<T>(string propertyName)
-		{
+		public T ReadPropertyValue<T>(string propertyName) {
 			return ReadPropertyValue<T>(propertyName, null);
 		}
 
-		public T ReadPropertyValue<T>(string propertyName, Func<T> expression)
-		{
+		public T ReadPropertyValue<T>(string propertyName, Func<T> expression) {
 			return (T)ReadPropertyValue(propertyName, expression.Method.GetAttribute<BinaryDataAttribute>() ?? new BinaryDataAttribute());
 		}
 
-		public object ReadPropertyValue(string propertyName, BinaryDataAttribute attribute = null)
-		{
+		public object ReadPropertyValue(string propertyName, BinaryDataAttribute attribute = null) {
 			var loc = _offsetTable[propertyName];
 			//if (loc == null) return BypassCommand.Instance;
 
@@ -96,6 +85,7 @@ namespace FTPcontentManager.Src.Models
 					loc.Length = buffer.Length;
 					_offsetTable.ShiftOffsetsFrom(propertyName, diff);
 				} else {
+					//throw new Exception("upsz, nem volt null");
 				}
 			} else {
 				buffer = Binary.ReadBytes(loc.Offset, loc.Length);
@@ -104,18 +94,15 @@ namespace FTPcontentManager.Src.Models
 			return ReadValue(buffer, property.PropertyType, attribute);
 		}
 
-		public T ReadValue<T>(int offset, int length, BinaryDataAttribute attribute = null)
-		{
+		public T ReadValue<T>(int offset, int length, BinaryDataAttribute attribute = null) {
 			var buffer = Binary.ReadBytes(offset, length);
 			return (T)ReadValue(buffer, typeof(T), attribute);
 		}
 
-		private static object ReadValue(byte[] buffer, Type propertyType, BinaryDataAttribute attribute = null)
-		{
+		private static object ReadValue(byte[] buffer, Type propertyType, BinaryDataAttribute attribute = null) {
 			var valueType = propertyType.IsEnum ? Enum.GetUnderlyingType(propertyType) : propertyType;
 
-			if (propertyType.IsArray)
-			{
+			if (propertyType.IsArray) {
 				var elementType = propertyType.GetElementType();
 				if (elementType == typeof(byte)) {
 					if (attribute.EndianType == EndianType.SwapBytesBy4 ||
@@ -157,7 +144,7 @@ namespace FTPcontentManager.Src.Models
 			if (valueSize.HasValue && buffer.Length < valueSize)
 				Array.Resize(ref buffer, valueSize.Value);
 
-			if (valueType == typeof (Version)) return ByteArrayExtensions.ToVersion(buffer);
+			if (valueType == typeof(Version)) return ByteArrayExtensions.ToVersion(buffer);
 			if (valueType == typeof(short)) return BitConverter.ToInt16(buffer, 0);
 			if (valueType == typeof(ushort)) return BitConverter.ToUInt16(buffer, 0);
 			if (valueType == typeof(int)) return BitConverter.ToInt32(buffer, 0);
@@ -168,11 +155,9 @@ namespace FTPcontentManager.Src.Models
 			throw new NotSupportedException("Invalid value type: " + valueType);
 		}
 
-		private void EnsureNullTerminatedStrings()
-		{
+		private void EnsureNullTerminatedStrings() {
 			var type = GetType();
-			foreach (var key in _offsetTable.Keys)
-			{
+			foreach (var key in _offsetTable.Keys) {
 				var attribute = type.GetProperty(key, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).GetAttribute<BinaryDataAttribute>();
 				if (attribute.StringReadOptions == StringReadOptions.NullTerminated && _offsetTable[key].Length == 1) {
 					ReadPropertyValue(key, attribute);
@@ -180,8 +165,7 @@ namespace FTPcontentManager.Src.Models
 			}
 		}
 
-		public void WritePropertyValue(string propertyName, object value)
-		{
+		public void WritePropertyValue(string propertyName, object value) {
 			var valueType = value.GetType();
 			var loc = _offsetTable[propertyName];
 			var property = GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
@@ -234,24 +218,22 @@ namespace FTPcontentManager.Src.Models
 				endian = true;
 			}
 
-			if (!noresize) 
+			if (!noresize)
 				Array.Resize(ref buffer, loc.Length);
-			if (endian && attribute.EndianType == EndianType.BigEndian) 
+			if (endian && attribute.EndianType == EndianType.BigEndian)
 				Array.Reverse(buffer);
 
 			Binary.WriteBytes(loc.Offset, buffer, 0, loc.Length);
 		}
 
-		public void DebugOffsetTable()
-		{
+		public void DebugOffsetTable() {
 			foreach (var key in _offsetTable.Keys) {
 				var entry = _offsetTable[key];
 				Debug.WriteLine("{0}\t{1}\t{2}\t{3}", key, entry.Offset, entry.Length, ReadPropertyValue(key));
 			}
 		}
 
-		public byte[] ReadAllBytes()
-		{
+		public byte[] ReadAllBytes() {
 			return Binary.ReadBytes(0, BinarySize);
 		}
 	}

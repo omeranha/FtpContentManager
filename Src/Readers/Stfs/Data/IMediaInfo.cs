@@ -1,6 +1,6 @@
-namespace FTPcontentManager.Src.Stfs.Data
+namespace FTPcontentManager.Src.Readers.Stfs.Data
 {
-    public interface IMediaInfo
-    {
-    }
+	public interface IMediaInfo
+	{
+	}
 }

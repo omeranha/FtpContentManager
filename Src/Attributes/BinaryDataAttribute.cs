@@ -2,11 +2,9 @@
 using System.Text;
 using FTPcontentManager.Src.Constants;
 
-namespace FTPcontentManager.Src.Attributes
-{
+namespace FTPcontentManager.Src.Attributes {
 	[AttributeUsage(AttributeTargets.All)]
-	public class BinaryDataAttribute : Attribute
-	{
+	public class BinaryDataAttribute : Attribute {
 		public int? Length { get; set; }
 		public EndianType EndianType { get; private set; }
 		public Encoding Encoding { get; private set; }

@@ -1,8 +1,12 @@
-﻿using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using FTPcontentManager.Src.Constants;
+using FTPcontentManager.Src.Readers.Gpd.Entries;
 using FTPcontentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Gpd
+namespace FTPcontentManager.Src.Readers.Gpd
 {
 	public class DashboardFile : GpdFile
 	{
@@ -71,6 +75,14 @@ namespace FTPcontentManager.Src.Gpd
 
 		protected DashboardFile(OffsetTable offsetTable, BinaryContainer binary, int startOffset) : base(offsetTable, binary, startOffset)
 		{
+			//if (!HasEntry(EntryType.Setting, (int)SettingId.GamercardZone)) Settings.Set(SettingId.GamercardZone, 0);
+			//if (!HasEntry(EntryType.Setting, (int)SettingId.GamercardRegion)) Settings.Set(SettingId.GamercardRegion, 2);
+			//if (!HasEntry(EntryType.Setting, (int)SettingId.YearsOnLive)) Settings.Set(SettingId.YearsOnLive, 0);
+			//if (!HasEntry(EntryType.Setting, (int)SettingId.GamercardMotto)) Settings.Set(SettingId.GamercardMotto, String.Empty);
+			//if (!HasEntry(EntryType.Setting, (int)SettingId.GamercardUserLocation)) Settings.Set(SettingId.GamercardUserLocation, String.Empty);
+			//if (!HasEntry(EntryType.Setting, (int)SettingId.GamercardUserName)) Settings.Set(SettingId.GamercardUserName, String.Empty);
+			//if (!HasEntry(EntryType.Setting, (int)SettingId.GamercardUserBio)) Settings.Set(SettingId.GamercardUserBio, String.Empty);
+			//if (!HasEntry(EntryType.Setting, (int)SettingId.GamercardRep)) Settings.Set(SettingId.GamercardRep, (float)0.0);
 		}
 
 		protected override void Initialize()
@@ -89,5 +101,43 @@ namespace FTPcontentManager.Src.Gpd
 			GamercardAchievementsEarned = TitlesPlayed.Sum(g => g.AchievementsUnlocked);
 			GamercardCred = TitlesPlayed.Sum(g => g.GamerscoreUnlocked);
 		}
+
+		//public void RebuildTitleSyncList()
+		//{
+		//	var entry = TitlesPlayed.SyncList.Entry;
+
+		//	//create new data
+		//	var length = TitlesPlayed.Count*SyncEntry.Size;
+		//	var binary = new BinaryContainer(length);
+		//	for (var i = 0; i < TitlesPlayed.Count; i++)
+		//	{
+		//		var item = ModelFactory.GetModel<SyncEntry>(binary, i*16);
+		//		item.EntryId = TitlesPlayed[i].Entry.Id;
+		//		item.SyncId = 0; //?
+		//	}
+
+		//	//release old space
+		//	var freeSpaceIndex = FreeSpaceTableEntryCount++;
+		//	var pos = freeSpaceIndex*FreeSpaceEntrySize;
+		//	var freeSpaceEntry = ModelFactory.GetModel<XdbfFreeSpaceEntry>(binary, pos);
+		//	freeSpaceEntry.AddressSpecifier = entry.AddressSpecifier;
+		//	freeSpaceEntry.Length = entry.Length;
+		//	FreeSpace.Add(freeSpaceEntry);
+
+		//	//copy data to a new space
+		//	var content = binary.ReadAll();
+		//	var specifier = AllocateSpaceForContent(content);
+		//	var startOffset = GetRealAddress(specifier);
+		//	Binary.WriteBytes(startOffset, content, 0, content.Length);
+		//	entry.AddressSpecifier = specifier;
+		//	entry.Length = length;
+
+		//	//parse copied data back
+		//	var entryCount = entry.Length / 16;
+		//	TitlesPlayed.SyncList = new SyncList { Entry = entry };
+		//	for (var i = 0; i < entryCount; i++)
+		//		TitlesPlayed.SyncList.Add(ModelFactory.GetModel<SyncEntry>(Binary, startOffset + i * 16));
+			
+		//}
 	}
 }

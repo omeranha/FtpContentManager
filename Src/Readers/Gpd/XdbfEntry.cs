@@ -1,8 +1,8 @@
-﻿using FTPcontentManager.Src.Attributes;
+using FTPcontentManager.Src.Attributes;
 using FTPcontentManager.Src.Constants;
 using FTPcontentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Gpd
+namespace FTPcontentManager.Src.Readers.Gpd
 {
 	public abstract class XdbfEntry : BinaryModelBase
 	{

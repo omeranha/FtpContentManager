@@ -1,25 +1,25 @@
 using System;
 using FTPcontentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Gpd.Entries
+namespace FTPcontentManager.Src.Readers.Gpd.Entries
 {
-    public class EntryBase : BinaryModelBase, IComparable
-    {
-        public XdbfEntry Entry { get; set; }
+	public class EntryBase : BinaryModelBase, IComparable
+	{
+		public XdbfEntry Entry { get; set; }
 
-        public byte[] AllBytes
-        {
-            get { return Binary.ReadBytes(StartOffset, BinarySize); }
-        }
+		public byte[] AllBytes
+		{
+			get { return Binary.ReadBytes(StartOffset, BinarySize); }
+		}
 
-        public EntryBase(OffsetTable offsetTable, BinaryContainer binary, int startOffset) : base(offsetTable, binary, startOffset)
-        {
-        }
+		public EntryBase(OffsetTable offsetTable, BinaryContainer binary, int startOffset) : base(offsetTable, binary, startOffset)
+		{
+		}
 
-        public virtual int CompareTo(object obj)
-        {
-            var other = obj as EntryBase;
-            return other == null ? 1 : Entry.Id.CompareTo(other.Entry.Id);
-        }
-    }
+		public virtual int CompareTo(object obj)
+		{
+			var other = obj as EntryBase;
+			return other == null ? 1 : Entry.Id.CompareTo(other.Entry.Id);
+		}
+	}
 }

@@ -1,13 +1,10 @@
-﻿using System;
+using System;
 using Castle.DynamicProxy;
 using FTPcontentManager.Src.Attributes;
 using FTPcontentManager.Src.Extensions;
-using FTPcontentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Models
-{
-	public class ModelInterceptor : IInterceptor
-	{
+namespace FTPcontentManager.Src.Models {
+	public class ModelInterceptor : IInterceptor {
 		public void Intercept(IInvocation invocation) {
 			if (invocation.Method.IsAutoProperty()) {
 				var property = invocation.Method.GetProperty();
@@ -53,7 +50,6 @@ namespace FTPcontentManager.Src.Models
 			} else {
 				invocation.Proceed();
 			}
-
 		}
 	}
 }

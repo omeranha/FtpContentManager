@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -9,76 +9,79 @@ using FTPcontentManager.Src.Attributes;
 using FTPcontentManager.Src.Constants;
 using FTPcontentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Extensions
-{
-	public static class StreamExtensions
-	{
-		private static readonly Type ModelInterface = typeof (IBinaryModel);
+namespace FTPcontentManager.Src.Extensions {
+	public static class StreamExtensions {
+		private static readonly Type ModelInterface = typeof(IBinaryModel);
 
-		public static byte[] ReadBytes(this Stream fs, int length)
-		{
+		//public static byte[] ReadToEnd(this Stream fs)
+		//{
+		//	var result = new byte[fs.Length];
+		//	var pos = 0;
+		//	int size;
+		//	while ((size = fs.Read(result, pos, 0xFFFF)) > 0)
+		//	{
+		//		pos += size;
+		//	}
+		//	return result;
+		//}
+
+		public static byte[] ReadBytes(this Stream fs, int length) {
 			var buffer = new byte[length];
-			fs.ReadExactly(buffer, 0, length);
+			fs.Read(buffer, 0, length);
 			return buffer;
 		}
 
-		public static ushort ReadShort(this Stream fs, bool isLowEndian = false)
-		{
+		public static ushort ReadShort(this Stream fs, bool isLowEndian = false) {
 			var buffer = new byte[2];
-			fs.ReadExactly(buffer, 0, 2);
+			fs.Read(buffer, 0, 2);
 			if (!isLowEndian) Array.Reverse(buffer);
 			return BitConverter.ToUInt16(buffer, 0);
 		}
 
-		public static uint ReadInt24(this Stream fs, bool isLowEndian = false)
-		{
+		public static uint ReadInt24(this Stream fs, bool isLowEndian = false) {
 			var buffer = new byte[3];
-			fs.ReadExactly(buffer, 0, 3);
-			if (!isLowEndian) Array.Reverse(buffer);
+			fs.Read(buffer, 0, 3);
+			if (!isLowEndian) {
+				Array.Reverse(buffer);
+			}
 			return (uint)((buffer[0] << 16) + (buffer[1] << 8) + (buffer[2]));
 		}
 
-		public static uint ReadUInt(this Stream fs, bool isLowEndian = false)
-		{
+		public static uint ReadUInt(this Stream fs, bool isLowEndian = false) {
 			var buffer = new byte[4];
-			fs.ReadExactly(buffer, 0, 4);
+			fs.Read(buffer, 0, 4);
 			if (!isLowEndian) Array.Reverse(buffer);
 			return BitConverter.ToUInt32(buffer, 0);
 		}
 
-		public static ulong ReadLong(this Stream fs, bool isLowEndian = false)
-		{
+		public static ulong ReadLong(this Stream fs, bool isLowEndian = false) {
 			var buffer = new byte[8];
-			fs.ReadExactly(buffer, 0, 8);
+			fs.Read(buffer, 0, 8);
 			if (!isLowEndian) Array.Reverse(buffer);
 			return BitConverter.ToUInt64(buffer, 0);
 		}
 
-		public static double ReadDouble(this Stream fs)
-		{
+		public static double ReadDouble(this Stream fs) {
 			var buffer = new byte[8];
-			fs.ReadExactly(buffer, 0, 8);
+			fs.Read(buffer, 0, 8);
 			return BitConverter.ToDouble(buffer, 0);
 		}
 
-		public static float ReadFloat(this Stream fs)
-		{
+		public static float ReadFloat(this Stream fs) {
 			var buffer = new byte[4];
-			fs.ReadExactly(buffer, 0, 4);
+			fs.Read(buffer, 0, 4);
 			return BitConverter.ToSingle(buffer, 0);
 		}
 
-		public static string ReadString(this Stream fs, int length, Encoding encoding = null)
-		{
+		public static string ReadString(this Stream fs, int length, Encoding encoding = null) {
 			encoding = encoding ?? Encoding.ASCII;
 			var buffer = new byte[length];
-			fs.ReadExactly(buffer, 0, length);
+			fs.Read(buffer, 0, length);
 			return encoding.GetString(buffer);
 		}
 
-		public static string ReadWString(this Stream fs, int? length = null, Encoding encoding = null)
-		{
-			encoding ??= Encoding.ASCII;
+		public static string ReadWString(this Stream fs, int? length = null, Encoding encoding = null) {
+			encoding = encoding ?? Encoding.ASCII;
 			var unlimited = false;
 			if (!length.HasValue) {
 				length = 64;
@@ -88,7 +91,7 @@ namespace FTPcontentManager.Src.Extensions
 			int i;
 			do {
 				var buffer = new byte[length.Value];
-				fs.ReadExactly(buffer, 0, length.Value);
+				fs.Read(buffer, 0, length.Value);
 				var encoded = encoding.GetChars(buffer);
 				i = 0;
 				while (i < encoded.Length && encoded[i] != 0) i++;
@@ -97,30 +100,29 @@ namespace FTPcontentManager.Src.Extensions
 			return sb.ToString();
 		}
 
-		public static T ReadBlock<T>(this Stream stream, long? address = null)
-		{
+		public static T ReadBlock<T>(this Stream stream, long? address = null) {
 			return stream.ReadBlock<T, T>(address);
 		}
 
-		public static TData ReadBlock<TData,TDef>(this Stream stream, long? address = null)
-		{
-			return (TData) ReadBlock(stream, typeof (TData), typeof (TDef), null, address);
+		public static TData ReadBlock<TData, TDef>(this Stream stream, long? address = null) {
+			return (TData)ReadBlock(stream, typeof(TData), typeof(TDef), null, address);
 		}
 
-		public static void ReadBlock(this Stream stream, object instance, long? address = null)
-		{
+		public static void ReadBlock(this Stream stream, object instance, long? address = null) {
 			var type = instance.GetType();
 			ReadBlock(stream, type, type, instance, address);
 		}
 
 		private static string _indent = String.Empty;
 
-		private static object ReadBlock(Stream stream, Type dataType, Type defType, object instance, long? address)
-		{
+		private static object ReadBlock(Stream stream, Type dataType, Type defType, object instance, long? address) {
 			if (address.HasValue) stream.Position = address.Value;
 			instance = instance ?? CreateInstance(dataType);
 			const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 			var properties = defType.GetProperties(bindingFlags);
+
+			var startPos = stream.Position;
+			//Debug.WriteLine("[0x{0,4:X4}]{1}ReadBlock<{2}> START", startPos, _indent, dataType.Name);
 			_indent += "  ";
 			foreach (var property in properties) {
 				var attribute = property.GetAttribute<BinaryDataAttribute>();
@@ -129,30 +131,32 @@ namespace FTPcontentManager.Src.Extensions
 				var pos = stream.Position;
 				var value = ReadPropertyValue(property, attribute, stream);
 				var bytes = stream.Position - pos;
+
+				//Debug.WriteLine("[0x{0,4:X4}]{1}[0x{2,4:X4}][{3}] {4} bytes into {5}; value: {6}", pos, _indent, pos-startPos, property.Name, bytes, value.GetType().Name, value);
+
 				var dataProperty = dataType.GetProperty(property.Name, bindingFlags);
 				dataProperty.SetValue(instance, value, null);
 			}
-			_indent = _indent[..^2];
+			_indent = _indent.Substring(0, _indent.Length - 2);
+			//Debug.WriteLine("[0x{0,4:X4}]{1}ReadBlock<{2}> END", stream.Position, _indent, dataType.Name);
 			return instance;
 		}
 
-		private static object CreateInstance(Type type)
-		{
+		private static object CreateInstance(Type type) {
 			var constructor = type.GetConstructor(Type.EmptyTypes);
 			if (constructor == null)
 				throw new NotSupportedException("Type must have got parameterless constructor: " + type.FullName);
 			return constructor.Invoke(new object[] { });
 		}
 
-		private static object ReadPropertyValue(PropertyInfo property, BinaryDataAttribute attribute, Stream stream)
-		{
+		private static object ReadPropertyValue(PropertyInfo property, BinaryDataAttribute attribute, Stream stream) {
 			var propertyType = property.PropertyType;
 			int length;
 
 			if (ModelInterface.IsAssignableFrom(propertyType)) {
 				return ReadBlock(stream, propertyType, propertyType, null, null);
 			}
-			
+
 			if (propertyType.IsArray && ModelInterface.IsAssignableFrom(propertyType.GetElementType())) {
 				if (!attribute.Length.HasValue)
 					throw new NotSupportedException("Arrays must have length specified");
@@ -179,9 +183,10 @@ namespace FTPcontentManager.Src.Extensions
 			} else if (attribute.StringReadOptions == StringReadOptions.NullTerminated) {
 				length = 64;
 				valueSize = null;
-			} else {
+			} else
 				throw new NotSupportedException("In case of reference types the length property is mandatory!");
-			}
+
+			//if (attribute.SkipBytes > 0) stream.Position += attribute.SkipBytes;
 
 			var byteList = new List<byte>();
 			var readMore = false;
@@ -255,9 +260,8 @@ namespace FTPcontentManager.Src.Extensions
 					value = BitConverter.ToInt64(bytes, 0);
 				} else if (valueType == typeof(ulong)) {
 					value = BitConverter.ToUInt64(bytes, 0);
-				} else {
+				} else
 					throw new NotSupportedException("Invalid value type: " + valueType);
-				}
 			}
 			return value;
 		}

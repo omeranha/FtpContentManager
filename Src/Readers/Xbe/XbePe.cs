@@ -1,8 +1,8 @@
-﻿using FTPcontentManager.Src.Attributes;
+using FTPcontentManager.Src.Attributes;
 using FTPcontentManager.Src.Constants;
 using FTPcontentManager.Src.Models;
 
-namespace FTPcontentManagerXbe
+namespace FTPcontentManager.Src.Readers.Xbe
 {
 	public class XbePe : BinaryModelBase
 	{

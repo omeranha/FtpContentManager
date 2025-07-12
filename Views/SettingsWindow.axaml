@@ -1,0 +1,56 @@
+<Window xmlns="https://github.com/avaloniaui"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		x:Class="FTPcontentManager.Views.SettingsWindow"
+		Title="Settings"
+		MinWidth="400"
+		Height="150"
+		SizeToContent="Width"
+		WindowStartupLocation="CenterOwner"
+		Background="#1e1e1e">
+	<Window.Resources>
+		<SolidColorBrush x:Key="WindowBackground" Color="#1e1e1e"/>
+		<SolidColorBrush x:Key="ControlBackground" Color="#232323"/>
+		<SolidColorBrush x:Key="ControlForeground" Color="#f3f3f3"/>
+		<SolidColorBrush x:Key="AccentBrush" Color="#2e7d32"/>
+		<SolidColorBrush x:Key="HoverBrush" Color="#00d721"/>
+		<SolidColorBrush x:Key="SelectedBrush" Color="#005a1e"/>
+	</Window.Resources>
+	<Window.Styles>
+		<Style Selector="TextBox">
+			<Setter Property="Background" Value="{DynamicResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{DynamicResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+			<Setter Property="CaretBrush" Value="{DynamicResource AccentBrush}"/>
+		</Style>
+			<Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+			<Setter Property="BorderBrush" Value="{DynamicResource HoverBrush}"/>
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="Background" Value="{DynamicResource ControlBackground}"/>
+			<Setter Property="Foreground" Value="{DynamicResource ControlForeground}"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="CornerRadius" Value="3"/>
+		</Style>
+	</Window.Styles>
+
+	<Grid Background="{DynamicResource WindowBackground}">
+		<StackPanel Orientation="Vertical" Margin="10,10,10,0">
+			<StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+				<Label Content="IP Address:" VerticalAlignment="Center"/>
+				<TextBox Name="ip" Height="22" Margin="0,0,10,0"/>
+				<Label Content="Username:" VerticalAlignment="Center"/>
+				<TextBox Name="username" Text="xboxftp" Height="22" Margin="0,0,10,0"/>
+				<Label Content="Password:" VerticalAlignment="Center"/>
+				<TextBox Name="password" Height="22" Margin="0,0,10,0" PasswordChar="*"/>
+				<Label Content="Port:" VerticalAlignment="Center"/>
+				<TextBox Name="port" Height="22" Margin="0,0,10,0" Text="21"/>
+			</StackPanel>
+			<Label Name="url" Foreground="{DynamicResource ControlForeground}" Margin="8,0,0,0"/>
+		</StackPanel>
+		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
+			<Button Name="Connect" Content="Connect" Click="Connect_Click" Margin="0,0,10,0"/>
+			<Button Name="Close" Content="Close" Click="Close_Click"/>
+		</StackPanel>
+	</Grid>
+</Window>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -8,10 +8,8 @@ using FTPcontentManager.Src.Attributes;
 using FTPcontentManager.Src.Constants;
 using FTPcontentManager.Src.Extensions;
 
-namespace FTPcontentManager.Src.Models
-{
-	public static class ModelFactory
-	{
+namespace FTPcontentManager.Src.Models {
+	public static class ModelFactory {
 		private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
 		private static readonly IInterceptor[] ModelInterceptor = new IInterceptor[] { new ModelInterceptor() };
 		private static readonly Dictionary<Type, OffsetTable> OffsetTables = new Dictionary<Type, OffsetTable>();

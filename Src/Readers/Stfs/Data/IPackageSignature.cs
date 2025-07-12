@@ -1,9 +1,9 @@
 using FTPcontentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Stfs.Data
+namespace FTPcontentManager.Src.Readers.Stfs.Data
 {
-    public interface IPackageSignature : IBinaryModel
-    {
-        byte[] Signature { get; set; }
-    }
+	public interface IPackageSignature : IBinaryModel
+	{
+		byte[] Signature { get; set; }
+	}
 }

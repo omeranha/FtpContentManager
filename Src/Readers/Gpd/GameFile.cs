@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Gpd.Entries;
+using FTPcontentManager.Src.Readers.Gpd.Entries;
 using FTPcontentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Gpd
+namespace FTPcontentManager.Src.Readers.Gpd
 {
 	public class GameFile : GpdFile
 	{
@@ -50,22 +50,22 @@ namespace FTPcontentManager.Src.Gpd
 
 			//if (Title == "Shadow Complex")
 			//{
-			//    foreach (var e in Entries)
-			//    {
-			//        var id = e.Id;
-			//        var extra = string.Empty;
-			//        if (e.IsSyncData)
-			//        {
-			//            if (e.Type != EntryType.AvatarAward) id -= 0x200000000;
-			//            extra = "SyncData";
-			//        }
-			//        if (e.IsSyncList)
-			//        {
-			//            if (e.Type != EntryType.AvatarAward) id -= 0x100000000;
-			//            extra = "SyncList";
-			//        }
-			//        Debug.WriteLine("[{0,3}][{1}][{2}]", id, e.Type, extra);
-			//    }
+			//	foreach (var e in Entries)
+			//	{
+			//		var id = e.Id;
+			//		var extra = string.Empty;
+			//		if (e.IsSyncData)
+			//		{
+			//			if (e.Type != EntryType.AvatarAward) id -= 0x200000000;
+			//			extra = "SyncData";
+			//		}
+			//		if (e.IsSyncList)
+			//		{
+			//			if (e.Type != EntryType.AvatarAward) id -= 0x100000000;
+			//			extra = "SyncList";
+			//		}
+			//		Debug.WriteLine("[{0,3}][{1}][{2}]", id, e.Type, extra);
+			//	}
 			//}
 		}
 

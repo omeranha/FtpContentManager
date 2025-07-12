@@ -1,25 +1,25 @@
 using System.Collections.Generic;
 
-namespace FTPcontentManager.Src.Gpd.Entries
+namespace FTPcontentManager.Src.Readers.Gpd.Entries
 {
-    public class AchievementComparer : IComparer<AchievementEntry>
-    {
-        public static AchievementComparer Instance { get; private set; }
+	public class AchievementComparer : IComparer<AchievementEntry>
+	{
+		public static AchievementComparer Instance { get; private set; }
 
-        static AchievementComparer()
-        {
-            Instance = new AchievementComparer();
-        }
+		static AchievementComparer()
+		{
+			Instance = new AchievementComparer();
+		}
 
-        private AchievementComparer()
-        {
+		private AchievementComparer()
+		{
 
-        }
+		}
 
-        public int Compare(AchievementEntry x, AchievementEntry y)
-        {
-            if (x.IsUnlocked) return y.IsUnlocked ? x.UnlockTime.CompareTo(y.UnlockTime) : 1;
-            return y.IsUnlocked ? -1 : -1 * x.CompareTo(y);
-        }
-    }
+		public int Compare(AchievementEntry x, AchievementEntry y)
+		{
+			if (x.IsUnlocked) return y.IsUnlocked ? x.UnlockTime.CompareTo(y.UnlockTime) : 1;
+			return y.IsUnlocked ? -1 : -1 * x.CompareTo(y);
+		}
+	}
 }

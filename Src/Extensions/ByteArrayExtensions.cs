@@ -1,18 +1,14 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text;
 
-namespace FTPcontentManager.Src.Extensions
-{
-	public static class ByteArrayExtensions
-	{
-		public static string ToHex(this byte[] a)
-		{
+namespace FTPcontentManager.Src.Extensions {
+	public static class ByteArrayExtensions {
+		public static string ToHex(this byte[] a) {
 			return String.Join(String.Empty, a.Select(b => b.ToString("X2")));
 		}
 
-		public static void SwapBytes(this byte[] a, int div)
-		{
+		public static void SwapBytes(this byte[] a, int div) {
 			if (a.Length % div != 0)
 				throw new InvalidOperationException("Array Length is not divisible by " + div);
 
@@ -28,8 +24,7 @@ namespace FTPcontentManager.Src.Extensions
 			}
 		}
 
-		public static void SwapEndian(this byte[] a, int div)
-		{
+		public static void SwapEndian(this byte[] a, int div) {
 			var temp = new byte[div];
 			for (var i = 0; i < a.Length; i += div) {
 				Buffer.BlockCopy(a, i, temp, 0, div);
@@ -38,8 +33,7 @@ namespace FTPcontentManager.Src.Extensions
 			}
 		}
 
-		public static DateTime ToDateTime(byte[] buffer)
-		{
+		public static DateTime ToDateTime(byte[] buffer) {
 			buffer.SwapEndian(4);
 			var high = BitConverter.ToUInt32(buffer, 0);
 			var low = BitConverter.ToUInt32(buffer, 4);
@@ -47,11 +41,10 @@ namespace FTPcontentManager.Src.Extensions
 			return DateTime.FromFileTime(time);
 		}
 
-		public static byte[] FromDateTime(DateTime value)
-		{
+		public static byte[] FromDateTime(DateTime value) {
 			var time = ((DateTime)value).ToFileTime();
-			var high = BitConverter.GetBytes((uint)(time >> 32));
-			var low = BitConverter.GetBytes((uint)(time & 0xFFFFFFFF));
+			var high = BitConverter.GetBytes(time.GetHigh32Bits());
+			var low = BitConverter.GetBytes(time.GetLow32Bits());
 			var buffer = new byte[8];
 			Buffer.BlockCopy(high, 0, buffer, 0, 4);
 			Buffer.BlockCopy(low, 0, buffer, 4, 4);
@@ -59,8 +52,7 @@ namespace FTPcontentManager.Src.Extensions
 			return buffer;
 		}
 
-		public static Version ToVersion(byte[] buffer)
-		{
+		public static Version ToVersion(byte[] buffer) {
 			switch (buffer.Length) {
 				case 4:
 					var v = BitConverter.ToInt32(buffer, 0);
@@ -77,8 +69,7 @@ namespace FTPcontentManager.Src.Extensions
 			}
 		}
 
-		public static byte[] FromVersion(Version version)
-		{
+		public static byte[] FromVersion(Version version) {
 			uint temp = 0;
 			temp |= ((uint)version.Major & 0xF) << 28;
 			temp |= ((uint)version.Minor & 0xF) << 24;
@@ -87,16 +78,14 @@ namespace FTPcontentManager.Src.Extensions
 			return BitConverter.GetBytes(temp);
 		}
 
-		public static string ToTrimmedString(byte[] buffer, Encoding encoding)
-		{
+		public static string ToTrimmedString(byte[] buffer, Encoding encoding) {
 			var encoded = encoding.GetChars(buffer);
 			var i = 0;
 			while (i < encoded.Length && encoded[i] != 0) i++;
 			return encoding.GetString(encoding.GetBytes(encoded.Take(i).ToArray()));
 		}
 
-		public static bool EqualsWith(this byte[] a, byte[] b)
-		{
+		public static bool EqualsWith(this byte[] a, byte[] b) {
 			if (a == null || b == null || a.Length != b.Length) return false;
 			return !a.Where((t, i) => t != b[i]).Any();
 		}
