@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Extensions;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Extensions;
 using System.Linq;
 
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public abstract class BinaryModelBase : IBinaryModel {
 		public static readonly Type BaseType = typeof(BinaryModelBase);
 

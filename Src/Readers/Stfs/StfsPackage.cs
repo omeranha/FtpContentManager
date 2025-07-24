@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Extensions;
-using FTPcontentManager.Src.Readers.Gpd;
-using FTPcontentManager.Src.Readers.Gpd.Entries;
-using FTPcontentManager.Src.Readers.Stfs.Data;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Extensions;
+using FtpContentManager.Src.Readers.Gpd;
+using FtpContentManager.Src.Readers.Gpd.Entries;
+using FtpContentManager.Src.Readers.Stfs.Data;
+using FtpContentManager.Src.Models;
 using System.Linq;
 
-namespace FTPcontentManager.Src.Readers.Stfs {
+namespace FtpContentManager.Src.Readers.Stfs {
 	public abstract class StfsPackage : Package<StfsVolumeDescriptor> {
 		public const int DefaultHeaderSizeVersion1 = 0x971A;
 

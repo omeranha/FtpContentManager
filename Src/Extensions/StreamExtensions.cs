@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.IO;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	public static class StreamExtensions {
 		private static readonly Type ModelInterface = typeof(IBinaryModel);
 

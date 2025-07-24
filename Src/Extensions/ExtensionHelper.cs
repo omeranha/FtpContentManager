@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	internal static class ExtensionHelper {
 		public static byte[] BlockCopy(Array src, int length) {
 			var bytes = new byte[length];

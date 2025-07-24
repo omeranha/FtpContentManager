@@ -1,9 +1,9 @@
 using System;
 using System.Text;
-using FTPcontentManager.Src.Extensions;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Extensions;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Gpd.Entries
+namespace FtpContentManager.Src.Readers.Gpd.Entries
 {
 	public class StringEntry : EntryBase
 	{

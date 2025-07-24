@@ -4,10 +4,10 @@ using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
-using FTPcontentManager.ViewModels;
-using FTPcontentManager.Views;
+using FtpContentManager.ViewModels;
+using FtpContentManager.Views;
 
-namespace FTPcontentManager;
+namespace FtpContentManager;
 
 public partial class App : Application
 {

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public class Tree<T> : TreeItem<T> where T : class, INamed {
 		public Tree() : base(string.Empty, GetDefaultContent(), null, null) {
 		}

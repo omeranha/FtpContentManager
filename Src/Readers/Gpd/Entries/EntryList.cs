@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Gpd.Entries
+namespace FtpContentManager.Src.Readers.Gpd.Entries
 {
 	public class EntryList<T> : SortedSet<T> where T :EntryBase
 	{

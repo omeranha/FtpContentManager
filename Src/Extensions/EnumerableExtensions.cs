@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	public static class EnumerableExtensions {
 		public static IList<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences) {
 			IEnumerable<IEnumerable<T>> enumerables = new[] { Enumerable.Empty<T>() };

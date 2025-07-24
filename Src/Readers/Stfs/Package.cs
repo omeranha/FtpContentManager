@@ -2,16 +2,16 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Extensions;
-using FTPcontentManager.Src.Readers.Stfs.Data;
-using FTPcontentManager.Src.Readers.Stfs.Events;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Extensions;
+using FtpContentManager.Src.Readers.Stfs.Data;
+using FtpContentManager.Src.Readers.Stfs.Events;
+using FtpContentManager.Src.Models;
 using System.Linq;
-using ContentType = FTPcontentManager.Src.Constants.ContentType;
+using ContentType = FtpContentManager.Src.Constants.ContentType;
 
-namespace FTPcontentManager.Src.Readers.Stfs
+namespace FtpContentManager.Src.Readers.Stfs
 {
 	public abstract class Package<T> : BinaryModelBase
 	{

@@ -1,4 +1,4 @@
-namespace FTPcontentManager.Src.Constants
+namespace FtpContentManager.Src.Constants
 {
 	public enum ContentType
 	{

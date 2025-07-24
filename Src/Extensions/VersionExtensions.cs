@@ -1,6 +1,6 @@
 using System;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	public static class VersionExtensions {
 		public static uint ToUInt32(this Version version) {
 			uint temp = 0;

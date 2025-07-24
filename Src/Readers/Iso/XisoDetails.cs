@@ -1,6 +1,6 @@
 using System;
 
-namespace FTPcontentManager.Src.Readers.Iso
+namespace FtpContentManager.Src.Readers.Iso
 {
 	public class XisoDetails
 	{

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using FTPcontentManager.Src.Readers.Stfs;
+using FtpContentManager.Src.Readers.Stfs;
 
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public class OffsetTable {
 		//TODO: nullterminateds should reset _size;
 		private int? _size;

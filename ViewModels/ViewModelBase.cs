@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FTPcontentManager.ViewModels;
+namespace FtpContentManager.ViewModels;
 
 public class ViewModelBase : ObservableObject
 {

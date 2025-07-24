@@ -399,6 +399,9 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
 /publish-linux
 /publish-win
 .editorconfig
+ftp_credentials.txt
+settings.json

@@ -1,4 +1,4 @@
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public interface IBinaryModel {
 		BinaryContainer Binary { get; set; }
 	}

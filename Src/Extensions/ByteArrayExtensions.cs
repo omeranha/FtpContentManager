@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Text;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	public static class ByteArrayExtensions {
 		public static string ToHex(this byte[] a) {
 			return String.Join(String.Empty, a.Select(b => b.ToString("X2")));

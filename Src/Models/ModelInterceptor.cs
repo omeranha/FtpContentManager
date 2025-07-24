@@ -1,9 +1,9 @@
 using System;
 using Castle.DynamicProxy;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Extensions;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Extensions;
 
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public class ModelInterceptor : IInterceptor {
 		public void Intercept(IInvocation invocation) {
 			if (invocation.Method.IsAutoProperty()) {

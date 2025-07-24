@@ -1,10 +1,10 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using FTPcontentManager.Src.Readers.Stfs;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Readers.Stfs;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Helpers {
+namespace FtpContentManager.Src.Helpers {
 	public static class ResourceHelper {
 		public static SvodPackage GetEmptyConHeader() {
 			return ModelFactory.GetModel<SvodPackage>(GetResourceBytes("ConHeader.bin"));

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Readers.Gpd.Entries;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Readers.Gpd.Entries;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Gpd
+namespace FtpContentManager.Src.Readers.Gpd
 {
 	public class GameFile : GpdFile
 	{

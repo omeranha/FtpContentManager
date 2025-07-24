@@ -4,11 +4,11 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using Castle.DynamicProxy;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Extensions;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Extensions;
 
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public static class ModelFactory {
 		private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
 		private static readonly IInterceptor[] ModelInterceptor = new IInterceptor[] { new ModelInterceptor() };

@@ -1,9 +1,9 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
-using FTPcontentManager.ViewModels;
+using FtpContentManager.ViewModels;
 
-namespace FTPcontentManager;
+namespace FtpContentManager;
 
 public class ViewLocator : IDataTemplate
 {

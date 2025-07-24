@@ -1,9 +1,9 @@
 using System;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Xex
+namespace FtpContentManager.Src.Readers.Xex
 {
 	[XexHeader(XexOptionalHeaderId.StaticLibraries)]
 	public class XexLibrary : BinaryModelBase

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Iso
+namespace FtpContentManager.Src.Readers.Iso
 {
 	public class XisoTableData : BinaryModelBase
 	{

@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	/// <summary>
 	/// Extension methods to the System.Reflection.MethodInfo class
 	/// </summary>

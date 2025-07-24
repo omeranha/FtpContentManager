@@ -3,7 +3,7 @@ using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-namespace FTPcontentManager.Views;
+namespace FtpContentManager.Views;
 
 public partial class SettingsWindow : Window {
 	private readonly MainWindow _mainWindow;

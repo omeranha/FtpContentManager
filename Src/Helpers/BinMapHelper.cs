@@ -3,12 +3,12 @@ using System.Collections;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using FTPcontentManager.Src.Extensions;
-using FTPcontentManager.Src.Readers.Stfs;
-using FTPcontentManager.Src.Readers.Stfs.Data;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Extensions;
+using FtpContentManager.Src.Readers.Stfs;
+using FtpContentManager.Src.Readers.Stfs.Data;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Helpers {
+namespace FtpContentManager.Src.Helpers {
 	public static class BinMapHelper {
 		public static void ModelCompare(BinaryModelBase wr, BinaryModelBase ok, string indent = "") {
 			var type = wr.GetType();

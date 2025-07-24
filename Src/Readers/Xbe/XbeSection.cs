@@ -1,10 +1,10 @@
 using System.Linq;
 using System.Text;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Xbe
+namespace FtpContentManager.Src.Readers.Xbe
 {
 	public class XbeSection : BinaryModelBase
 	{

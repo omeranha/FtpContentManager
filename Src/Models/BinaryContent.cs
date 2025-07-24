@@ -1,6 +1,6 @@
-using FTPcontentManager.Src.Constants;
+using FtpContentManager.Src.Constants;
 
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public class BinaryContent {
 		public string FilePath { get; private set; }
 		public byte[] Content { get; set; }

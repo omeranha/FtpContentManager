@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Linq;
-using FTPcontentManager.Src.Constants;
+using FtpContentManager.Src.Constants;
 
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public class BinaryContainer {
 		private byte[] Bytes { get; set; }
 

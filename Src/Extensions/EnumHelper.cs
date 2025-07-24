@@ -1,9 +1,9 @@
 using System;
 using System.Text.RegularExpressions;
 using System.Linq;
-using FTPcontentManager.Src.Attributes;
+using FtpContentManager.Src.Attributes;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	/// <summary>
 	/// Enum helper class works with enums that use StringValue attribute on their fields.
 	/// </summary>

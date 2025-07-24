@@ -1,7 +1,7 @@
 ﻿using Avalonia;
 using System;
 
-namespace FTPcontentManager;
+namespace FtpContentManager;
 
 sealed class Program
 {

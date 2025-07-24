@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Gpd.Entries
+namespace FtpContentManager.Src.Readers.Gpd.Entries
 {
 	public class SyncList : List<SyncEntry>
 	{

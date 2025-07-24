@@ -1,4 +1,4 @@
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	public static class LongExtensions {
 		public static int GetHigh32Bits(this long v) {
 			return (int)(v >> 32);

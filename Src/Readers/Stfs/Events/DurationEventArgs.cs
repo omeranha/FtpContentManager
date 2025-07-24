@@ -1,6 +1,6 @@
 using System;
 
-namespace FTPcontentManager.Src.Readers.Stfs.Events
+namespace FtpContentManager.Src.Readers.Stfs.Events
 {
 	public class DurationEventArgs : EventArgs
 	{

@@ -1,11 +1,11 @@
 ﻿using System;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace FTPcontentManager.Src.Readers.Xpr {
+namespace FtpContentManager.Src.Readers.Xpr {
 	public class XprPackage : BinaryModelBase {
 		[BinaryData(4, "ascii")]
 		public virtual string Magic { get; set; }

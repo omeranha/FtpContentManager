@@ -7,20 +7,17 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System;
-using MsBox.Avalonia.Enums;
-using MsBox.Avalonia;
 using Avalonia.Platform.Storage;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Data;
-using FTPcontentManager.Src.Readers.Stfs;
-using FTPcontentManager.Src.Models;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Attributes;
-namespace FTPcontentManager.Views;
+using FtpContentManager.Src.Readers.Stfs;
+using FtpContentManager.Src.Models;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Attributes;
+namespace FtpContentManager.Views;
 
-public partial class MainWindow : Window
-{
+public partial class MainWindow : Window {
 	public string ftpIp = String.Empty;
 	public string ftpUsername = "xboxftp"; // Default username
 	public string ftpPassword = String.Empty;
@@ -207,8 +204,7 @@ public partial class MainWindow : Window
 				if (stfs.ThumbnailImage != null) {
 					item.Icon = new Bitmap(new MemoryStream(stfs.ThumbnailImage));
 				}
-			} catch (Exception ex) {
-				await MessageBox($"Error reading STFS package for {item.Name}: {ex.Message}");
+			} catch (Exception) {
 				continue;
 			}
 		}
@@ -242,27 +238,20 @@ public partial class MainWindow : Window
 					break;
 				case Key.Delete: {
 						if (window_filelist.SelectedItem is not FileListItem selectedItem || selectedItem.Type == ItemType.Parent) return;
-						if (!await MessageBox($"Are you sure you want to delete {selectedItem.DisplayName}?", "Confirm Delete", ButtonEnum.YesNo)) return;
-						try {
+						if (await MessageBox($"Are you sure you want to delete {selectedItem.DisplayName}?", true, "Yes", "No")) {
 							await DeleteFtpItem(selectedItem);
-						} catch (Exception ex) {
-							await MessageBox($"Error deleting {selectedItem.Name}: {ex.Message}");
 						}
-					break;
-				}
+						break;
+					}
 				case Key.Enter: {
 						if (window_filelist.SelectedItem is not FileListItem selectedItem) return;
 						if (selectedItem.Type == ItemType.File) {
-							try {
-								await DownloadFile(selectedItem.Path);
-							} catch (Exception ex) {
-								await MessageBox($"Error downloading {selectedItem.Name}: {ex.Message}");
-							}
+							await DownloadFile(selectedItem.Path);
 						} else {
 							await ListItems(selectedItem.Path);
 						}
-					break;
-				}
+						break;
+					}
 				case Key.Back:
 					var actualPath = url.Content?.ToString();
 					if (actualPath == null || actualPath == "/") return;
@@ -276,17 +265,21 @@ public partial class MainWindow : Window
 	}
 
 	private async Task DeleteFtpItem(FileListItem item) {
-		var request = FtpRequest(item.Path);
-		if (item.Type == ItemType.Directory) {
-			foreach (var subItem in await GetFolderItems(item.Path)) {
-				await DeleteFtpItem(subItem);
+		try {
+			var request = FtpRequest(item.Path);
+			if (item.Type == ItemType.Directory) {
+				foreach (var subItem in await GetFolderItems(item.Path)) {
+					await DeleteFtpItem(subItem);
+				}
+				request.Method = WebRequestMethods.Ftp.RemoveDirectory;
+			} else {
+				request.Method = WebRequestMethods.Ftp.DeleteFile;
 			}
-			request.Method = WebRequestMethods.Ftp.RemoveDirectory;
-		} else {
-			request.Method = WebRequestMethods.Ftp.DeleteFile;
+			using var response = (FtpWebResponse)await request.GetResponseAsync();
+			await ListItems(url.Content?.ToString());
+		} catch (WebException ex) {
+			await MessageBox($"Error deleting {item.Name}: {ex.Message}");
 		}
-		using var response = (FtpWebResponse)await request.GetResponseAsync();
-		await ListItems(url.Content?.ToString());
 	}
 
 	private async Task DownloadFile(string path) {
@@ -314,24 +307,40 @@ public partial class MainWindow : Window
 		}
 	}
 
-	private void Filelist_DragOver(object? sender, DragEventArgs e) {
-		e.DragEffects = e.Data.GetFiles() != null ? DragDropEffects.Copy : DragDropEffects.None;
-		if (e.DragEffects == DragDropEffects.None) {
-			e.Handled = true;
-		}
-	}
-
-	private async void Filelist_Drop(object? sender, DragEventArgs e) {
-		var droppedFiles = e.Data.GetFiles();
-		if (droppedFiles == null) return;
-
-		foreach (var file in droppedFiles) {
-			try {
-				await Upload(file.Name, url.Content?.ToString(), file.Path.LocalPath.ToString());
-				await MessageBox($"Uploaded {file.Name} successfully.");
-			} catch (Exception ex) {
-				await MessageBox($"Error uploading {file.Name}: {ex.Message}");
+	private async Task DownloadFolder(string path, string? destinationPath = null) {
+		string folderName = Path.GetFileName(path);
+		try {
+			if (destinationPath == null) {
+				var picker = new FolderPickerOpenOptions {
+					Title = "Select Destination Folder",
+					AllowMultiple = false
+				};
+				var result = await StorageProvider.OpenFolderPickerAsync(picker);
+				if (result.Count == 0) return;
+				destinationPath = result[0].Path.LocalPath;
 			}
+			if (!string.IsNullOrEmpty(destinationPath)) {
+				string fullPath = Path.Combine(destinationPath, folderName);
+				if (!Directory.Exists(fullPath)) {
+					Directory.CreateDirectory(fullPath);
+				}
+
+				var items = await GetFolderItems(path);
+				foreach (var item in items) {
+					if (item.Type == ItemType.File) {
+						var bytes = await DownloadFileBytes(item.Path);
+						if (bytes != null && bytes.Length > 0) {
+							string filePath = Path.Combine(fullPath, item.Name);
+							await File.WriteAllBytesAsync(filePath, bytes);
+						}
+					} else if (item.Type == ItemType.Directory) {
+						await DownloadFolder(item.Path, fullPath);
+					}
+				}
+				await MessageBox($"Downloaded folder {folderName}");
+			}
+		} catch (Exception ex) {
+			await MessageBox($"Error downloading folder {folderName}: {ex.Message}");
 		}
 	}
 
@@ -363,6 +372,27 @@ public partial class MainWindow : Window
 		await ListItems(url.Content?.ToString());
 	}
 
+	private void Filelist_DragOver(object? sender, DragEventArgs e) {
+		e.DragEffects = e.Data.GetFiles() != null ? DragDropEffects.Copy : DragDropEffects.None;
+		if (e.DragEffects == DragDropEffects.None) {
+			e.Handled = true;
+		}
+	}
+
+	private async void Filelist_Drop(object? sender, DragEventArgs e) {
+		var droppedFiles = e.Data.GetFiles();
+		if (droppedFiles == null) return;
+
+		foreach (var file in droppedFiles) {
+			try {
+				await Upload(file.Name, url.Content?.ToString(), file.Path.LocalPath.ToString());
+				await MessageBox($"Uploaded {file.Name} successfully.");
+			} catch (Exception ex) {
+				await MessageBox($"Error uploading {file.Name}: {ex.Message}");
+			}
+		}
+	}
+
 	private async void Filelist_DoubleTapped(object? sender, TappedEventArgs e) {
 		if (window_filelist.SelectedItem is FileListItem selected) {
 			if (selected.Type != ItemType.File) {
@@ -373,13 +403,51 @@ public partial class MainWindow : Window
 		}
 	}
 
-	public async Task<bool> MessageBox(string message, string title = "FtpContentManager", ButtonEnum buttons = ButtonEnum.Ok) {
-		var box = MessageBoxManager.GetMessageBoxStandard(title, message, buttons);
-		return await box.ShowAsync() == ButtonResult.Yes;
+	public async Task<bool> MessageBox(string message, bool showCancelButton = false, string okButtonText = "Ok", string cancelButtonText = "Cancel") {
+		var msgBox = new MessageBox(message, showCancelButton, okButtonText, cancelButtonText);
+		await msgBox.ShowDialog(this);
+		return msgBox.Result == true;
 	}
 
-	private async void Settings_Click(object? sender, RoutedEventArgs e) {
+	private async void OpenSettings(object? sender, RoutedEventArgs e) {
 		var settingsWindow = new SettingsWindow(this);
 		await settingsWindow.ShowDialog<bool?>(this);
+	}
+
+	private async void ContextMenu_Download(object? sender, RoutedEventArgs e) {
+		if (window_filelist.SelectedItem is FileListItem selectedItem && selectedItem.Type != ItemType.Parent) {
+			if (selectedItem.Type == ItemType.Directory) {
+				await DownloadFolder(selectedItem.Path);
+			} else {
+				await DownloadFile(selectedItem.Path);
+			}
+		}
+	}
+
+	private async void ContextMenu_Delete(object? sender, RoutedEventArgs e) {
+		if (window_filelist.SelectedItem is FileListItem selectedItem && selectedItem.Type != ItemType.Parent) {
+			if (await MessageBox($"Are you sure you want to delete {selectedItem.DisplayName}?", true, "Yes", "No")) {
+				await DeleteFtpItem(selectedItem);
+			}
+		}
+	}
+
+	private async void UploadToFolder_Click(object? sender, RoutedEventArgs e) {
+		var picker = new FolderPickerOpenOptions {
+			Title = "Select items to Upload",
+			AllowMultiple = true
+		};
+
+		var result = await StorageProvider.OpenFolderPickerAsync(picker);
+		if (result != null) {
+			foreach (var item in result) {
+				try {
+					await Upload(item.Name, url.Content?.ToString(), item.Path.LocalPath.ToString());
+					await MessageBox($"Uploaded {item.Name} successfully.");
+				} catch (Exception ex) {
+					await MessageBox($"Error uploading {item.Name}: {ex.Message}");
+				}
+			}
+		}
 	}
 }

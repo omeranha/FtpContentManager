@@ -1,10 +1,10 @@
 using System;
 using System.IO;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Stfs.Data
+namespace FtpContentManager.Src.Readers.Stfs.Data
 {
 	public class LicenseEntry : BinaryModelBase
 	{

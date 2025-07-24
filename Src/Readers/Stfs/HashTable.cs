@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Readers.Stfs.Data;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Readers.Stfs.Data;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Stfs
+namespace FtpContentManager.Src.Readers.Stfs
 {
 	public class HashTable : BinaryModelBase
 	{

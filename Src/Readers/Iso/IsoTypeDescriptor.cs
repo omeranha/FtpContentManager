@@ -1,6 +1,6 @@
-using FTPcontentManager.Src.Constants;
+using FtpContentManager.Src.Constants;
 
-namespace FTPcontentManager.Src.Readers.Iso
+namespace FtpContentManager.Src.Readers.Iso
 {
 	public class IsoTypeDescriptor
 	{

@@ -4,7 +4,7 @@ using System.Security.Cryptography;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
-using FTPcontentManager.Src.Security;
+using FtpContentManager.Src.Security;
 /*
  * 
  * Thanks to Anthony for most of the XEX2 code.

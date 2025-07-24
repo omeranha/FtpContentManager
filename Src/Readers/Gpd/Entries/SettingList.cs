@@ -1,7 +1,7 @@
 using System;
-using FTPcontentManager.Src.Constants;
+using FtpContentManager.Src.Constants;
 
-namespace FTPcontentManager.Src.Readers.Gpd.Entries
+namespace FtpContentManager.Src.Readers.Gpd.Entries
 {
 	public class SettingList : EntryList<SettingEntry>
 	{

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.God
+namespace FtpContentManager.Src.Readers.God
 {
 	public class DataFile
 	{

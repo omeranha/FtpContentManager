@@ -1,4 +1,4 @@
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public class BinaryLocation {
 		public int Offset { get; set; }
 		public int Length { get; set; }

@@ -1,6 +1,6 @@
 using System;
 
-namespace FTPcontentManager.Src.Constants
+namespace FtpContentManager.Src.Constants
 {
 	public static class Offsets
 	{

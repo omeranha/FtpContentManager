@@ -1,7 +1,7 @@
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.God
+namespace FtpContentManager.Src.Readers.God
 {
 	public class HashTable : BinaryModelBase
 	{

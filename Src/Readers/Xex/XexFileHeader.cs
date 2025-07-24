@@ -1,7 +1,7 @@
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Xex
+namespace FtpContentManager.Src.Readers.Xex
 {
 	public class XexFileHeader : BinaryModelBase
 	{

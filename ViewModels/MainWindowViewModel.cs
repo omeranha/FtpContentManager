@@ -1,4 +1,4 @@
-﻿namespace FTPcontentManager.ViewModels;
+﻿namespace FtpContentManager.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {

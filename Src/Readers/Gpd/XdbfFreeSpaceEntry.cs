@@ -1,7 +1,7 @@
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Gpd
+namespace FtpContentManager.Src.Readers.Gpd
 {
 	public class XdbfFreeSpaceEntry : BinaryModelBase
 	{

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	public static class DateTimeExtensions {
 		public static int ToFatFileTime(this DateTime time) {
 			var y = 0;

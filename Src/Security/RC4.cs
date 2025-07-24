@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace FTPcontentManager.Src.Security
+namespace FtpContentManager.Src.Security
 {
 	public static class RC4 {
 		public static string Encrypt(string key, string data) {

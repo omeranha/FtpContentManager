@@ -1,6 +1,6 @@
 using System;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	public static class ShortToBigEndian {
 		public static byte[] ToBigEndian(this ushort v) {
 			byte[] bytes = BitConverter.GetBytes(v);

@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35707.178 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FTPcontentManager", "FTPcontentManager.csproj", "{4B38A570-B008-4199-B0DF-846606819099}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FtpContentManager", "FtpContentManager.csproj", "{4B38A570-B008-4199-B0DF-846606819099}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

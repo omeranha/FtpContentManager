@@ -1,18 +1,18 @@
 <Window xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:FTPcontentManager.ViewModels"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:views="clr-namespace:FTPcontentManager.Views"
-        mc:Ignorable="d"
-        x:Class="FTPcontentManager.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
-        Title="FTP Content Manager"
-        Width="800"
-        Height="720"
-        Icon="/Assets/app.png"
-        Background="#1e1e1e"
-        WindowStartupLocation="CenterScreen">
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:vm="using:FtpContentManager.ViewModels"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:views="clr-namespace:FtpContentManager.Views"
+		mc:Ignorable="d"
+		x:Class="FtpContentManager.Views.MainWindow"
+		x:DataType="vm:MainWindowViewModel"
+		Title="FTP Content Manager"
+		Width="800"
+		Height="720"
+		Icon="/Assets/app.png"
+		Background="#1e1e1e"
+		WindowStartupLocation="CenterScreen">
 	<Window.Resources>
 		<SolidColorBrush x:Key="WindowBackground" Color="#1e1e1e"/>
 		<SolidColorBrush x:Key="ControlBackground" Color="#232323"/>
@@ -21,6 +21,7 @@
 		<SolidColorBrush x:Key="HoverBrush" Color="#00d721"/>
 		<SolidColorBrush x:Key="SelectedBrush" Color="#005a1e"/>
 	</Window.Resources>
+
 	<Window.Styles>
 		<Style Selector="Label">
 			<Setter Property="Foreground" Value="{DynamicResource ControlForeground}"/>
@@ -31,7 +32,7 @@
 			<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
 			<Setter Property="CaretBrush" Value="{DynamicResource AccentBrush}"/>
 		</Style>
-			<Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
+		<Style Selector="TextBox:focus /template/ Border#PART_BorderElement">
 			<Setter Property="BorderBrush" Value="{DynamicResource HoverBrush}"/>
 		</Style>
 		<Style Selector="Button">
@@ -54,43 +55,83 @@
 			<Setter Property="Margin" Value="2"/>
 			<Setter Property="HorizontalContentAlignment" Value="Stretch"/>
 			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="ContextMenu">
+				<ContextMenu>
+					<MenuItem Header="Download" Click="ContextMenu_Download"/>
+					<MenuItem Header="Delete" Click="ContextMenu_Delete"/>
+				</ContextMenu>
+			</Setter>
 		</Style>
 	</Window.Styles>
+	
 	<Grid Background="{DynamicResource WindowBackground}">
-		<StackPanel Orientation="Vertical" Margin="10,10,10,0">
-			<Label Name="url" Content="/" Foreground="{DynamicResource ControlForeground}" Margin="8,0,0,0"/>
-		</StackPanel>
+	<Grid.RowDefinitions>
+		<RowDefinition Height="Auto"/>
+		<RowDefinition Height="*"/>
+	</Grid.RowDefinitions>
+	<Grid.ColumnDefinitions>
+		<ColumnDefinition Width="*" />
+		<ColumnDefinition Width="Auto" />
+	</Grid.ColumnDefinitions>
 
-		<Grid Margin="20,40,200,60">
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto"/>
-				<RowDefinition Height="*"/>
-			</Grid.RowDefinitions>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition/>
-				<ColumnDefinition Width="Auto" MinWidth="0"/>
-			</Grid.ColumnDefinitions>
-
-			<StackPanel Orientation="Horizontal" Grid.Row="0" Grid.ColumnSpan="" Margin="0,0,0,2">
-				<TextBlock Text="" Width="32"/>
-				<TextBlock Text="Name" Width="300" FontWeight="Bold" Foreground="{DynamicResource ControlForeground}"/>
-				<TextBlock Text="Size" Width="100" FontWeight="Bold" Foreground="{DynamicResource ControlForeground}"/>
-				<TextBlock Text="Modified" Width="200" FontWeight="Bold" Foreground="{DynamicResource ControlForeground}"/>
-				<Button Name="Settings" Content="Settings" Click="Settings_Click"/>
-			</StackPanel>
-			<ListBox Name="window_filelist" Grid.Row="1" Grid.ColumnSpan="2" DragDrop.AllowDrop="True"
-				DoubleTapped="Filelist_DoubleTapped" DragDrop.Drop="Filelist_Drop" DragDrop.DragOver="Filelist_DragOver">
-				<ListBox.ItemTemplate>
-					<DataTemplate DataType="{x:Type views:FileListItem}">
-						<StackPanel Orientation="Horizontal" Spacing="8">
-							<Image Source="{Binding Icon}" Width="24" Height="24" Stretch="Uniform"/>
-							<TextBlock Text="{Binding DisplayName}" Width="300"/>
-							<TextBlock Text="{Binding Size}" Width="100"/>
-							<TextBlock Text="{Binding Date}" Width="200"/>
-						</StackPanel>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-		</Grid>
+	<Grid Grid.Row="0" Grid.Column="0" Margin="10,10,10,10">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Label Name="url" Content="/" VerticalAlignment="Center"/>
 	</Grid>
+
+	<Grid Grid.Row="1" Grid.Column="0" Margin="10,0,10,10">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="Auto" MinWidth="0"/>
+		</Grid.ColumnDefinitions>
+		<Grid Grid.Row="0" Grid.Column="0" Margin="0,0,0,2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="32"/>
+				<ColumnDefinition Width="300"/>
+				<ColumnDefinition Width="100"/>
+				<ColumnDefinition Width="90"/>
+			</Grid.ColumnDefinitions>
+			<Image Grid.Column="0" Width="32" Height="1"/>
+			<TextBlock Grid.Column="1" Text="Name" FontWeight="Bold" VerticalAlignment="Center"/>
+			<TextBlock Grid.Column="2" Text="Size" FontWeight="Bold" VerticalAlignment="Center"/>
+			<TextBlock Grid.Column="3" Text="Modified" FontWeight="Bold" VerticalAlignment="Center"/>
+		</Grid>
+		<ListBox Name="window_filelist" Grid.Row="1" DragDrop.AllowDrop="True"
+				 DoubleTapped="Filelist_DoubleTapped" DragDrop.Drop="Filelist_Drop"
+				 DragDrop.DragOver="Filelist_DragOver">
+			<ListBox.ItemTemplate>
+				<DataTemplate DataType="{x:Type views:FileListItem}">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="32"/>
+							<ColumnDefinition Width="300"/>
+							<ColumnDefinition Width="100"/>
+							<ColumnDefinition Width="90"/>
+						</Grid.ColumnDefinitions>
+						<Image Grid.Column="0" Source="{Binding Icon}" Width="24" Height="24" Stretch="Uniform"/>
+						<TextBlock Grid.Column="1" Text="{Binding DisplayName}" VerticalAlignment="Center"/>
+						<TextBlock Grid.Column="2" Text="{Binding Size}" VerticalAlignment="Center"/>
+						<TextBlock Grid.Column="3" Text="{Binding Date}" VerticalAlignment="Center"/>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Grid>
+
+	<Grid Grid.RowSpan="2" Grid.Column="1" Margin="0,10,10,0" VerticalAlignment="Stretch">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="40"/>
+		</Grid.RowDefinitions>
+		<Button Grid.Row="0" Name="Settings" Content="Settings" Click="OpenSettings" Width="130"/>
+		<Button Grid.Row="1" Name="UploadToFolder" Content="Upload to Folder" Click="UploadToFolder_Click" Width="130"/>
+	</Grid>
+</Grid>
 </Window>

@@ -1,8 +1,8 @@
 using System;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Stfs.Data
+namespace FtpContentManager.Src.Readers.Stfs.Data
 {
 	public class Update : BinaryModelBase, IInstallerInformation
 	{

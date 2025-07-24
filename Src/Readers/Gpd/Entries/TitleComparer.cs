@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace FTPcontentManager.Src.Readers.Gpd.Entries
+namespace FtpContentManager.Src.Readers.Gpd.Entries
 {
 	public class TitleComparer : IComparer<TitleEntry>
 	{

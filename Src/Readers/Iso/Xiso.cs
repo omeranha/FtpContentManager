@@ -6,17 +6,17 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using SixLabors.ImageSharp.Formats.Png;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Helpers;
-using FTPcontentManager.Src.Readers.Gpd;
-using FTPcontentManager.Src.Readers.Gpd.Entries;
-using FTPcontentManager.Src.Readers.Xbe;
-using FTPcontentManager.Src.Readers.Xex;
-using FTPcontentManager.Src.Readers.Xpr;
-using FTPcontentManager.Src.Models;
-using IsoType = FTPcontentManager.Src.Constants.IsoType;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Helpers;
+using FtpContentManager.Src.Readers.Gpd;
+using FtpContentManager.Src.Readers.Gpd.Entries;
+using FtpContentManager.Src.Readers.Xbe;
+using FtpContentManager.Src.Readers.Xex;
+using FtpContentManager.Src.Readers.Xpr;
+using FtpContentManager.Src.Models;
+using IsoType = FtpContentManager.Src.Constants.IsoType;
 
-namespace FTPcontentManager.Src.Readers.Iso
+namespace FtpContentManager.Src.Readers.Iso
 {
     public class Xiso : IDisposable
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
-namespace FTPcontentManager.Src.Models {
+namespace FtpContentManager.Src.Models {
 	public class BinMap {
 		private readonly Dictionary<int, BinMapEntry> _log = new Dictionary<int, BinMapEntry>();
 		private Tuple<int, int, bool>[] _highlightCache;

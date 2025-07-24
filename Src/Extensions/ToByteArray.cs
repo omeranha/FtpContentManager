@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	public static class StringToByteArray {
 		public static byte[] ToByteArray(this string s) {
 			return ToByteArray(s, s.Length);

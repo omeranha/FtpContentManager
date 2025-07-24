@@ -2,14 +2,14 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Extensions;
-using FTPcontentManager.Src.Readers.Stfs.Data;
-using FTPcontentManager.Src.Models;
-using FTPcontentManager.Src.Security;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Extensions;
+using FtpContentManager.Src.Readers.Stfs.Data;
+using FtpContentManager.Src.Models;
+using FtpContentManager.Src.Security;
 
-namespace FTPcontentManager.Src.Readers.Stfs
+namespace FtpContentManager.Src.Readers.Stfs
 {
 	public class Account : BinaryModelBase
 	{

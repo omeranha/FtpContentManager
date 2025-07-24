@@ -2,7 +2,7 @@ using System;
 using System.Reflection;
 using System.Linq;
 
-namespace FTPcontentManager.Src.Extensions {
+namespace FtpContentManager.Src.Extensions {
 	/// <summary>
 	/// Extension methods to the System.Reflection.MemberInfo class
 	/// </summary>

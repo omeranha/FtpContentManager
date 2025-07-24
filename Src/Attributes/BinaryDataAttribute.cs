@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Text;
-using FTPcontentManager.Src.Constants;
+using FtpContentManager.Src.Constants;
 
-namespace FTPcontentManager.Src.Attributes {
+namespace FtpContentManager.Src.Attributes {
 	[AttributeUsage(AttributeTargets.All)]
 	public class BinaryDataAttribute : Attribute {
 		public int? Length { get; set; }

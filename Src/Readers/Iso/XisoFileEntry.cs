@@ -1,7 +1,7 @@
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Iso
+namespace FtpContentManager.Src.Readers.Iso
 {
 	public class XisoFileEntry : INamed
 	{

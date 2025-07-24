@@ -1,7 +1,7 @@
 using System;
-using FTPcontentManager.Src.Constants;
+using FtpContentManager.Src.Constants;
 
-namespace FTPcontentManager.Src.Readers.Xex
+namespace FtpContentManager.Src.Readers.Xex
 {
 	public class XexHeaderAttribute : Attribute
 	{

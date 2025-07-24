@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 
-namespace FTPcontentManager.Views
+namespace FtpContentManager.Views
 {
 	enum ItemType
 	{
@@ -49,13 +49,13 @@ namespace FTPcontentManager.Views
 			Path = path;
 			switch (type) {
 				case ItemType.File:
-					Icon = new(AssetLoader.Open(new Uri("avares://FTPcontentManager/Assets/file.png")));
+					Icon = new(AssetLoader.Open(new Uri("avares://FtpContentManager/Assets/file.png")));
 					break;
 				case ItemType.Directory:
-					Icon = new(AssetLoader.Open(new Uri("avares://FTPcontentManager/Assets/folder.png")));
+					Icon = new(AssetLoader.Open(new Uri("avares://FtpContentManager/Assets/folder.png")));
 					break;
 				case ItemType.Parent:
-					Icon = new(AssetLoader.Open(new Uri("avares://FTPcontentManager/Assets/up.png")));
+					Icon = new(AssetLoader.Open(new Uri("avares://FtpContentManager/Assets/up.png")));
 					break;
 			}
 		}

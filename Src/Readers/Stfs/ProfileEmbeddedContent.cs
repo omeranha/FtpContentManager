@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.IO;
-using FTPcontentManager.Src.Attributes;
-using FTPcontentManager.Src.Constants;
-using FTPcontentManager.Src.Readers.Gpd;
-using FTPcontentManager.Src.Readers.Stfs.Data;
-using FTPcontentManager.Src.Models;
+using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src.Constants;
+using FtpContentManager.Src.Readers.Gpd;
+using FtpContentManager.Src.Readers.Stfs.Data;
+using FtpContentManager.Src.Models;
 
-namespace FTPcontentManager.Src.Readers.Stfs
+namespace FtpContentManager.Src.Readers.Stfs
 {
 	[DeclaredOnly]
 	public class ProfileEmbeddedContent : StfsPackage

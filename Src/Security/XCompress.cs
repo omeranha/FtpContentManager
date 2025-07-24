@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace FTPcontentManager.Src.Security {
+namespace FtpContentManager.Src.Security {
 	public static class XCompress {
 		private readonly static bool IsMachine64Bit;
 

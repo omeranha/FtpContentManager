@@ -1,9 +1,11 @@
 <Window xmlns="https://github.com/avaloniaui"
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		x:Class="FtpContentManager.Views.SettingsWindow"
-		Title="Settings"
+		x:Class="FtpContentManager.Views.MessageBox"
+		xmlns:views="clr-namespace:FtpContentManager.Views"
+		x:DataType="views:MessageBox"
+		Title="FtpContentManager"
 		MinWidth="400"
-		Height="150"
+		Height="100"
 		SizeToContent="Width"
 		WindowStartupLocation="CenterOwner"
 		Background="#1e1e1e">
@@ -34,23 +36,13 @@
 		</Style>
 	</Window.Styles>
 
-	<Grid Background="{DynamicResource WindowBackground}">
+		<Grid Background="{DynamicResource WindowBackground}">
 		<StackPanel Orientation="Vertical" Margin="10,10,10,0">
-			<StackPanel Orientation="Horizontal" VerticalAlignment="Top">
-				<Label Content="IP Address:" VerticalAlignment="Center"/>
-				<TextBox Name="ip" Height="22" Margin="0,0,10,0"/>
-				<Label Content="Username:" VerticalAlignment="Center"/>
-				<TextBox Name="username" Text="xboxftp" Height="22" Margin="0,0,10,0"/>
-				<Label Content="Password:" VerticalAlignment="Center"/>
-				<TextBox Name="password" Height="22" Margin="0,0,10,0" PasswordChar="*"/>
-				<Label Content="Port:" VerticalAlignment="Center"/>
-				<TextBox Name="port" Height="22" Margin="0,0,10,0" Text="21"/>
-			</StackPanel>
-			<Label Name="url" Foreground="{DynamicResource ControlForeground}" Margin="8,0,0,0"/>
+			<Label Content="{Binding Message}" Foreground="{DynamicResource ControlForeground}" Margin="8,0,0,0"/>
 		</StackPanel>
 		<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-			<Button Name="Connect" Content="Connect" Click="Connect_Click" Margin="0,0,10,0"/>
-			<Button Name="Close" Content="Close" Click="Close_Click"/>
+			<Button Name="Ok" Content="{Binding OkButtonText}" Click="Ok_Click" Margin="0,0,10,0"/>
+			<Button Name="Cancel" Content="{Binding CancelButtonText}" IsVisible="{Binding ShowCancelButton}" Click="Cancel_Click"/>
 		</StackPanel>
 	</Grid>
 </Window>
