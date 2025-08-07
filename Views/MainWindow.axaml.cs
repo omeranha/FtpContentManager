@@ -4,31 +4,32 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System;
 using Avalonia.Platform.Storage;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
 using System.Data;
 using FtpContentManager.Src.Readers.Stfs;
 using FtpContentManager.Src.Models;
 using FtpContentManager.Src.Constants;
 using FtpContentManager.Src.Attributes;
+using FtpContentManager.Src;
 namespace FtpContentManager.Views;
 
 public partial class MainWindow : Window {
-	public string ftpIp = String.Empty;
-	public string ftpUsername = "xboxftp"; // Default username
-	public string ftpPassword = String.Empty;
-	public string ftpPort = "21"; // Default FTP port
+	public string FtpIp { get; set; } = string.Empty;
+	public string FtpUsername { get; set; } = "xboxftp"; // Default username
+	public string FtpPassword { get; set; } = string.Empty;
+	public string FtpPort { get; set; } = "21"; // Default FTP port
 	public const string FtpCredentialsFile = "ftp_credentials.txt";
-	private readonly ObservableCollection<FileListItem> fileListItems = [];
+	private readonly ObservableCollection<FileListItem> _fileListItems = [];
+	public FtpClient? FtpClient { get; set; }
 
 	public MainWindow() {
 		InitializeComponent();
-		window_filelist.ItemsSource = fileListItems;
+		window_filelist.ItemsSource = _fileListItems;
 		Opened += MainWindow_Opened;
+		Closed += MainWindow_Closed;
 	}
 
 	private async void MainWindow_Opened(object? sender, EventArgs e) {
@@ -40,147 +41,90 @@ public partial class MainWindow : Window {
 			return;
 		}
 
-		(ftpIp, ftpUsername, ftpPassword, ftpPort) = (credentials[0], credentials[1], credentials[2], credentials[3]);
+		FtpClient?.Dispose();
+		(FtpIp, FtpUsername, FtpPassword, FtpPort) = (credentials[0], credentials[1], credentials[2], credentials[3]);
+		FtpClient = new FtpClient(FtpIp, FtpUsername, FtpPassword, int.Parse(FtpPort));
+		Title = $"FTP Content Manager: Connecting to {FtpIp}...";
 		try {
-			await ListItems();
+			if (await FtpClient.ConnectAsync()) {
+				Title = "FTP Content Manager: Connected to " + FtpIp;
+				await ListItems();
+			}
 		} catch (Exception ex) {
+			Title = "FTP Content Manager";
 			await MessageBox($"FTP connection failed: {ex.Message}");
+			FtpClient?.Dispose();
+			FtpClient = null;
 		}
 	}
 
-	private FtpWebRequest FtpRequest(string requestUri) {
-		var request = (FtpWebRequest)WebRequest.Create($"ftp://{ftpIp}:{ftpPort}{requestUri}");
-		request.Credentials = new NetworkCredential(ftpUsername, ftpPassword);
-		request.UseBinary = true;
-		request.KeepAlive = false;
-		return request;
+	private void MainWindow_Closed(object? sender, EventArgs e) {
+		FtpClient?.Dispose();
+		FtpClient = null;
 	}
 
 	public async Task ListItems(string? folder = "/") {
-		folder ??= "/";
-		fileListItems.Clear();
+		if (FtpClient == null) return;
 
+		folder ??= "/";
+		_fileListItems.Clear();
+
+		WorkingDirectory.Text = folder;
 		if (folder != "/") {
 			var index = folder.LastIndexOf('/');
 			string parentPath = (index > 0) ? folder[..index] : "/";
-			fileListItems.Add(new FileListItem("[..]", 0, string.Empty, ItemType.Parent, parentPath));
+			_fileListItems.Add(new FileListItem("[..]", 0, string.Empty, ItemType.Parent, parentPath));
+			// Hdd1, Usb1, Usb2
+			if (folder.Length == 5) {
+				var disks = await FtpClient.GetStorageInfo();
+				disks.TryGetValue(folder.Substring(1, 4), out string? diskInfo);
+				DiskInfo.Text = diskInfo;
+			}
+		} else {
+			DiskInfo.Text = string.Empty;
 		}
-		var items = await GetFolderItems(folder);
+		var items = await FtpClient.GetFolderItems(folder);
 		foreach (var item in items.OrderBy(i => i.Type != ItemType.Directory).ThenBy(i => i.Name, StringComparer.OrdinalIgnoreCase)) {
-			fileListItems.Add(item);
+			_fileListItems.Add(item);
 		}
 
-		url.Content = folder;
-		if (folder.EndsWith("0000000000000000")) {
-			_ = ChangeFolderNames();
-		} else if (folder.EndsWith("Content")) {
-			_ = ChangeAccountFolders();
-		} else if (folder.EndsWith("000B0000") || folder.EndsWith("00000002") || folder.EndsWith("00007000") || folder.EndsWith("000D0000")) {
-			_ = ChangeFileNames();
+		if (folder.EndsWith("Content")) {
+			_ = GetGamerTagsFromFolder();
+		} else if (folder.EndsWith("0000000000000000") || folder.EndsWith("000B0000") || folder.EndsWith("00000002") || folder.EndsWith("00007000") || folder.EndsWith("000D0000")) {
+			_ = LoadGameMetadata();
 		}
 	}
 
-	private async Task<List<FileListItem>> GetFolderItems(string folder) {
-		var items = new List<FileListItem>();
-		var request = FtpRequest($"/{Uri.EscapeDataString(folder.TrimStart('/'))}/");
-		request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-		using var response = (FtpWebResponse)await request.GetResponseAsync();
-		using var reader = new StreamReader(response.GetResponseStream());
-		string? line;
-		while ((line = await reader.ReadLineAsync()) != null) {
-			// "drwxrwxrwx   1 root root             0 Jan 01  2000 Hdd1"
-			if (string.IsNullOrWhiteSpace(line)) continue;
-			var tokens = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-			bool isDir = tokens[0][0] == 'd';
-			string name = string.Join(" ", tokens.Skip(8));
-			var type = isDir ? ItemType.Directory : ItemType.File;
-			var size = isDir ? 0 : long.Parse(tokens[4]);
-			var date = $"{tokens[5]} {tokens[6]} {tokens[7]}";
-			string itemPath = folder.TrimEnd('/') + "/" + name;
-			items.Add(new FileListItem(name, size, date, type, itemPath));
-		}
-		return items;
-	}
+	private async Task LoadGameMetadata() {
+		if (FtpClient == null) return;
+		foreach (var item in _fileListItems.ToList()) {
+			if (item.Type == ItemType.Parent) continue;
 
-	private async Task ChangeFolderNames() {
-		foreach (var item in fileListItems.ToList()) {
-			if (item.Type != ItemType.Directory) continue;
-
-			bool found = false;
-			string[] subfolderPaths = [$"{item.Path}/00007000", $"{item.Path}/000D0000"];
-			foreach (var subfolderPath in subfolderPaths) {
-				if (found) break;
-
-				var request = FtpRequest($"/{Uri.EscapeDataString(subfolderPath.TrimStart('/'))}/");
-				request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-				FtpWebResponse? response = null;
-				try {
-					response = (FtpWebResponse)await request.GetResponseAsync();
-				} catch (WebException) {
-					// if 00007000 folder does not exist, it's a XBLA game
-					continue;
-				}
-
-				using var reader = new StreamReader(response.GetResponseStream());
-				string? line;
-				while ((line = await reader.ReadLineAsync()) != null) {
-					if (string.IsNullOrWhiteSpace(line)) continue;
-
-					var tokens = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-					string name = string.Join(" ", tokens.Skip(8));
-					var type = (tokens[0][0] == 'd') ? ItemType.Directory : ItemType.File;
-					if (type != ItemType.File) continue;
-
-					var svod = await ReadSvod($"{subfolderPath}/{name}", StfsPackage.DefaultHeaderSizeVersion1);
-					if (svod == null || !svod.IsValid) continue;
-					item.DisplayName = $"{svod.DisplayName} [{item.Name}]";
-					if (svod.ThumbnailImage != null) {
-						item.Icon = new Bitmap(new MemoryStream(svod.ThumbnailImage));
+			if (item.Type == ItemType.Directory) {
+				bool found = false;
+				string[] subfolderPaths = [$"{item.Path}/00007000", $"{item.Path}/000D0000"];
+				foreach (var subfolderPath in subfolderPaths) {
+					if (found) break;
+					try {
+						var items = await FtpClient.GetFolderItems(subfolderPath);
+						foreach (var subItem in items) {
+							var svod = await ReadSvod($"{subfolderPath}/{subItem.Name}", StfsPackage.DefaultHeaderSizeVersion1);
+							if (svod == null || !svod.IsValid) continue;
+							item.DisplayName = $"{svod.DisplayName} [{item.Name}]";
+							if (svod.ThumbnailImage != null) {
+								item.Icon = new Bitmap(new MemoryStream(svod.ThumbnailImage));
+							}
+							found = true;
+							break;
+						}
+					} catch (Exception) {
+						// if 00007000 folder does not exist, it's a XBLA game
+						continue;
 					}
-					found = true;
-					break;
 				}
-			}
-		}
-	}
-
-	private async Task<SvodPackage?> ReadSvod(string path, long header = -1) {
-		var bytes = await DownloadFileBytes(path, (int)header);
-		if (bytes == null) return null;
-		return ModelFactory.GetModel<SvodPackage>(bytes);
-	}
-
-	private async Task<byte[]> DownloadFileBytes(string path, int stopPosition = 0) {
-		var request = FtpRequest(path);
-		request.UsePassive = false;
-		var memoryStream = new MemoryStream();
-		try {
-			using var response = (FtpWebResponse)await request.GetResponseAsync();
-			using var responseStream = response.GetResponseStream();
-			int bufferSize = stopPosition > 0 ? stopPosition : 81920;
-			byte[] buffer = new byte[bufferSize];
-			long totalRead = 0;
-			int bytesRead;
-			while (stopPosition == 0 || totalRead < stopPosition) {
-				int readLength = stopPosition == 0 ? buffer.Length : (int)Math.Min(buffer.Length, stopPosition - totalRead);
-				bytesRead = await responseStream.ReadAsync(buffer.AsMemory(0, readLength));
-				if (bytesRead <= 0) break;
-				await memoryStream.WriteAsync(buffer.AsMemory(0, bytesRead));
-				totalRead += bytesRead;
-			}
-		} catch (WebException) {
-			// when working with large files, sometimes it catches a 550 exception even with the bytes been downloaded correctly
-			// so just ignore it
-		}
-		return memoryStream.ToArray();
-	}
-
-	private async Task ChangeFileNames() {
-		foreach (var item in fileListItems.ToList()) {
-			if (item.Type != ItemType.File) continue;
-
-			var svod = await ReadSvod(item.Path, StfsPackage.DefaultHeaderSizeVersion1 + 12);
-			if (svod != null && svod.IsValid) {
+			} else if (item.Type == ItemType.File) {
+				var svod = await ReadSvod(item.Path, StfsPackage.DefaultHeaderSizeVersion1 + 12);
+				if (svod == null || !svod.IsValid) continue;
 				item.DisplayName = svod.DisplayName;
 				if (svod.InstallerType == InstallerType.TitleUpdate) {
 					var version = svod.ReadValue<Version>(StfsPackage.DefaultHeaderSizeVersion1 + 8, 4, new BinaryDataAttribute(EndianType.BigEndian));
@@ -193,10 +137,18 @@ public partial class MainWindow : Window {
 		}
 	}
 
-	private async Task ChangeAccountFolders() {
-		foreach (var item in fileListItems.ToList()) {
+	private async Task<SvodPackage?> ReadSvod(string path, long header = -1) {
+		if (FtpClient == null) return null;
+		var bytes = await FtpClient.DownloadFileBytes(path, (int)header);
+		if (bytes == null) return null;
+		return ModelFactory.GetModel<SvodPackage>(bytes);
+	}
+
+	private async Task GetGamerTagsFromFolder() {
+		if (FtpClient == null) return;
+		foreach (var item in _fileListItems.ToList()) {
 			if (item.Type == ItemType.Parent || item.Name == "0000000000000000") continue;
-			var bytes = await DownloadFileBytes($"{item.Path}/FFFE07D1/00010000/{item.Name}");
+			var bytes = await FtpClient.DownloadFileBytes($"{item.Path}/FFFE07D1/00010000/{item.Name}");
 			try {
 				var stfs = ModelFactory.GetModel<StfsPackage>(bytes);
 				stfs.ExtractAccount();
@@ -253,7 +205,7 @@ public partial class MainWindow : Window {
 						break;
 					}
 				case Key.Back:
-					var actualPath = url.Content?.ToString();
+					var actualPath = WorkingDirectory.Text;
 					if (actualPath == null || actualPath == "/") return;
 					var index = actualPath.LastIndexOf('/');
 					string parentPath = (index > 0) ? actualPath[..index] : "/";
@@ -265,24 +217,24 @@ public partial class MainWindow : Window {
 	}
 
 	private async Task DeleteFtpItem(FileListItem item) {
+		if (FtpClient == null) return;
 		try {
-			var request = FtpRequest(item.Path);
 			if (item.Type == ItemType.Directory) {
-				foreach (var subItem in await GetFolderItems(item.Path)) {
+				foreach (var subItem in await FtpClient.GetFolderItems(item.Path)) {
 					await DeleteFtpItem(subItem);
 				}
-				request.Method = WebRequestMethods.Ftp.RemoveDirectory;
+				await FtpClient.ExecuteCommandAsync("RMD", item.Path);
 			} else {
-				request.Method = WebRequestMethods.Ftp.DeleteFile;
+				await FtpClient.ExecuteCommandAsync("DELE", item.Path);
 			}
-			using var response = (FtpWebResponse)await request.GetResponseAsync();
-			await ListItems(url.Content?.ToString());
-		} catch (WebException ex) {
+			await ListItems(WorkingDirectory.Text);
+		} catch (Exception ex) {
 			await MessageBox($"Error deleting {item.Name}: {ex.Message}");
 		}
 	}
 
 	private async Task DownloadFile(string path) {
+		if (FtpClient == null) return;
 		string name = Path.GetFileName(path);
 		try {
 			var picker = new FolderPickerOpenOptions {
@@ -293,7 +245,7 @@ public partial class MainWindow : Window {
 			if (result.Count == 0) return;
 			string destinationPath = result[0].Path.LocalPath;
 			if (!string.IsNullOrEmpty(destinationPath)) {
-				var bytes = await DownloadFileBytes(path);
+				var bytes = await FtpClient.DownloadFileBytes(path);
 				if (bytes == null || bytes.Length == 0) {
 					await MessageBox("Failed to download file or file is empty.");
 					return;
@@ -308,6 +260,7 @@ public partial class MainWindow : Window {
 	}
 
 	private async Task DownloadFolder(string path, string? destinationPath = null) {
+		if (FtpClient == null) return;
 		string folderName = Path.GetFileName(path);
 		try {
 			if (destinationPath == null) {
@@ -325,10 +278,10 @@ public partial class MainWindow : Window {
 					Directory.CreateDirectory(fullPath);
 				}
 
-				var items = await GetFolderItems(path);
+				var items = await FtpClient.GetFolderItems(path);
 				foreach (var item in items) {
 					if (item.Type == ItemType.File) {
-						var bytes = await DownloadFileBytes(item.Path);
+						var bytes = await FtpClient.DownloadFileBytes(item.Path);
 						if (bytes != null && bytes.Length > 0) {
 							string filePath = Path.Combine(fullPath, item.Name);
 							await File.WriteAllBytesAsync(filePath, bytes);
@@ -345,21 +298,15 @@ public partial class MainWindow : Window {
 	}
 
 	private async Task Upload(string name, string? remoteFolder, string path) {
-		string remotePath = string.IsNullOrEmpty(remoteFolder) ? $"/{name}" : $"{remoteFolder}/{name}";
-
-		var request = FtpRequest(remotePath);
+		if (FtpClient == null) return;
+		string remotePath = string.IsNullOrEmpty(remoteFolder) || remoteFolder == "/" ? name : $"{remoteFolder.TrimEnd('/')}/{name}";
 		if (File.Exists(path)) {
-			request.Method = WebRequestMethods.Ftp.UploadFile;
-			using var fileStream = File.OpenRead(path);
-			using var requestStream = await request.GetRequestStreamAsync();
-			await fileStream.CopyToAsync(requestStream);
-			using var response = (FtpWebResponse)await request.GetResponseAsync();
+			await FtpClient.UploadFileAsync(path, remotePath);
 		} else if (Directory.Exists(path)) {
-			request.Method = WebRequestMethods.Ftp.MakeDirectory;
 			try {
-				using var _ = (FtpWebResponse)await request.GetResponseAsync();
-			} catch (WebException) {
-				// directory may already exist, ignore
+				await FtpClient.ExecuteCommandAsync("MKD", remotePath);
+			} catch (Exception) {
+				// directory already exists, ignore
 			}
 
 			var subItems = Directory.GetFileSystemEntries(path);
@@ -369,7 +316,7 @@ public partial class MainWindow : Window {
 			}
 		}
 
-		await ListItems(url.Content?.ToString());
+		await ListItems(WorkingDirectory.Text);
 	}
 
 	private void Filelist_DragOver(object? sender, DragEventArgs e) {
@@ -385,7 +332,7 @@ public partial class MainWindow : Window {
 
 		foreach (var file in droppedFiles) {
 			try {
-				await Upload(file.Name, url.Content?.ToString(), file.Path.LocalPath.ToString());
+				await Upload(file.Name, WorkingDirectory.Text, file.Path.LocalPath.ToString());
 				await MessageBox($"Uploaded {file.Name} successfully.");
 			} catch (Exception ex) {
 				await MessageBox($"Error uploading {file.Name}: {ex.Message}");
@@ -395,9 +342,9 @@ public partial class MainWindow : Window {
 
 	private async void Filelist_DoubleTapped(object? sender, TappedEventArgs e) {
 		if (window_filelist.SelectedItem is FileListItem selected) {
-			if (selected.Type != ItemType.File) {
+			if (selected.Type == ItemType.Directory || selected.Type == ItemType.Parent) {
 				await ListItems(selected.Path);
-			} else {
+			} else if (selected.Type == ItemType.File) {
 				await DownloadFile(selected.Path);
 			}
 		}
@@ -439,15 +386,30 @@ public partial class MainWindow : Window {
 		};
 
 		var result = await StorageProvider.OpenFolderPickerAsync(picker);
-		if (result != null) {
-			foreach (var item in result) {
-				try {
-					await Upload(item.Name, url.Content?.ToString(), item.Path.LocalPath.ToString());
-					await MessageBox($"Uploaded {item.Name} successfully.");
-				} catch (Exception ex) {
-					await MessageBox($"Error uploading {item.Name}: {ex.Message}");
-				}
+		if (result == null || result.Count == 0) return;
+		foreach (var item in result) {
+			try {
+				await Upload(item.Name, WorkingDirectory.Text, item.Path.LocalPath.ToString());
+				await MessageBox($"Uploaded {item.Name} successfully.");
+			} catch (Exception ex) {
+				await MessageBox($"Error uploading {item.Name}: {ex.Message}");
 			}
+		}
+	}
+
+	private async void Disconnect_Click(object? sender, RoutedEventArgs e) {
+		if (FtpClient != null) {
+			if (FtpClient.IsConnected) {
+				FtpClient.Disconnect();
+			}
+			FtpClient.Dispose();
+			FtpClient = null;
+			Title = "FTP Content Manager";
+			WorkingDirectory.Text = string.Empty;
+			DiskInfo.Text = string.Empty;
+			_fileListItems.Clear();
+		} else {
+			await MessageBox("You are not connected to any FTP server.");
 		}
 	}
 }

@@ -3,7 +3,7 @@
 		xmlns:vm="using:FtpContentManager.ViewModels"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:views="clr-namespace:FtpContentManager.Views"
+		xmlns:src="clr-namespace:FtpContentManager.Src"
 		mc:Ignorable="d"
 		x:Class="FtpContentManager.Views.MainWindow"
 		x:DataType="vm:MainWindowViewModel"
@@ -13,6 +13,7 @@
 		Icon="/Assets/app.png"
 		Background="#1e1e1e"
 		WindowStartupLocation="CenterScreen">
+
 	<Window.Resources>
 		<SolidColorBrush x:Key="WindowBackground" Color="#1e1e1e"/>
 		<SolidColorBrush x:Key="ControlBackground" Color="#232323"/>
@@ -63,75 +64,80 @@
 			</Setter>
 		</Style>
 	</Window.Styles>
-	
+
 	<Grid Background="{DynamicResource WindowBackground}">
-	<Grid.RowDefinitions>
-		<RowDefinition Height="Auto"/>
-		<RowDefinition Height="*"/>
-	</Grid.RowDefinitions>
-	<Grid.ColumnDefinitions>
-		<ColumnDefinition Width="*" />
-		<ColumnDefinition Width="Auto" />
-	</Grid.ColumnDefinitions>
-
-	<Grid Grid.Row="0" Grid.Column="0" Margin="10,10,10,10">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-		<Label Name="url" Content="/" VerticalAlignment="Center"/>
-	</Grid>
-
-	<Grid Grid.Row="1" Grid.Column="0" Margin="10,0,10,10">
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="60"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto"/>
-			<ColumnDefinition Width="Auto" MinWidth="0"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="Auto"/>
 		</Grid.ColumnDefinitions>
-		<Grid Grid.Row="0" Grid.Column="0" Margin="0,0,0,2">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="32"/>
-				<ColumnDefinition Width="300"/>
-				<ColumnDefinition Width="100"/>
-				<ColumnDefinition Width="90"/>
-			</Grid.ColumnDefinitions>
-			<Image Grid.Column="0" Width="32" Height="1"/>
-			<TextBlock Grid.Column="1" Text="Name" FontWeight="Bold" VerticalAlignment="Center"/>
-			<TextBlock Grid.Column="2" Text="Size" FontWeight="Bold" VerticalAlignment="Center"/>
-			<TextBlock Grid.Column="3" Text="Modified" FontWeight="Bold" VerticalAlignment="Center"/>
-		</Grid>
-		<ListBox Name="window_filelist" Grid.Row="1" DragDrop.AllowDrop="True"
-				 DoubleTapped="Filelist_DoubleTapped" DragDrop.Drop="Filelist_Drop"
-				 DragDrop.DragOver="Filelist_DragOver">
-			<ListBox.ItemTemplate>
-				<DataTemplate DataType="{x:Type views:FileListItem}">
+
+		<!-- Header Section -->
+		<!-- Left Control Panel -->
+		<StackPanel Grid.Row="0" Grid.Column="0" Orientation="Vertical" Margin="10,10,10,0" Spacing="5">
+			<Button Name="Settings" Content="Settings" Click="OpenSettings" Width="130" Height="30"/>
+			<Button Name="UploadToFolder" Content="Upload to Folder" Click="UploadToFolder_Click" Width="130" Height="30"/>
+		</StackPanel>
+
+		<!-- Center Info Panel -->
+		<StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical" Margin="5,15,0,0" Spacing="2">
+			<TextBlock Name="WorkingDirectory" Text="" VerticalAlignment="Center"/>
+			<TextBlock Name="DiskInfo" Text="" VerticalAlignment="Center"/>
+		</StackPanel>
+
+		<!-- Right Control Panel -->
+		<Button Grid.Row="0" Grid.Column="2" Name="Disconnect" Content="Disconnect" Click="Disconnect_Click" Margin="10,15,10,0" Height="30"/>
+
+		<!-- Main Content Area -->
+		<Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" Margin="10,10,10,10" BorderBrush="{DynamicResource AccentBrush}"
+			BorderThickness="1" CornerRadius="3">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+				</Grid.RowDefinitions>
+
+				<!-- Column Headers -->
+				<Border Grid.Row="0" Background="{DynamicResource ControlBackground}" Padding="5,8">
 					<Grid>
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="32"/>
-							<ColumnDefinition Width="300"/>
+							<ColumnDefinition Width="40"/>
+							<ColumnDefinition Width="*"/>
 							<ColumnDefinition Width="100"/>
-							<ColumnDefinition Width="90"/>
+							<ColumnDefinition Width="120"/>
 						</Grid.ColumnDefinitions>
-						<Image Grid.Column="0" Source="{Binding Icon}" Width="24" Height="24" Stretch="Uniform"/>
-						<TextBlock Grid.Column="1" Text="{Binding DisplayName}" VerticalAlignment="Center"/>
-						<TextBlock Grid.Column="2" Text="{Binding Size}" VerticalAlignment="Center"/>
-						<TextBlock Grid.Column="3" Text="{Binding Date}" VerticalAlignment="Center"/>
+						<TextBlock Grid.Column="0" Text="" FontWeight="Bold"/>
+						<TextBlock Grid.Column="1" Text="Name" FontWeight="Bold" VerticalAlignment="Center"/>
+						<TextBlock Grid.Column="2" Text="Size" FontWeight="Bold" VerticalAlignment="Center"/>
+						<TextBlock Grid.Column="3" Text="Modified" FontWeight="Bold" VerticalAlignment="Center"/>
 					</Grid>
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
-	</Grid>
+				</Border>
 
-	<Grid Grid.RowSpan="2" Grid.Column="1" Margin="0,10,10,0" VerticalAlignment="Stretch">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="40"/>
-			<RowDefinition Height="40"/>
-			<RowDefinition Height="40"/>
-		</Grid.RowDefinitions>
-		<Button Grid.Row="0" Name="Settings" Content="Settings" Click="OpenSettings" Width="130"/>
-		<Button Grid.Row="1" Name="UploadToFolder" Content="Upload to Folder" Click="UploadToFolder_Click" Width="130"/>
+				<!-- File List -->
+				<ListBox Name="window_filelist" Grid.Row="1" DragDrop.AllowDrop="True" DoubleTapped="Filelist_DoubleTapped"
+					DragDrop.Drop="Filelist_Drop" DragDrop.DragOver="Filelist_DragOver" BorderThickness="0">
+					<ListBox.ItemTemplate>
+						<DataTemplate DataType="{x:Type src:FileListItem}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="40"/>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="100"/>
+									<ColumnDefinition Width="120"/>
+								</Grid.ColumnDefinitions>
+								<Image Grid.Column="0" Source="{Binding Icon}" Width="24" Height="24" Stretch="Uniform" HorizontalAlignment="Center"/>
+								<TextBlock Grid.Column="1" Text="{Binding DisplayName}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+								<TextBlock Grid.Column="2" Text="{Binding DisplaySize}" VerticalAlignment="Center"/>
+								<TextBlock Grid.Column="3" Text="{Binding Date}" VerticalAlignment="Center"/>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Grid>
+		</Border>
 	</Grid>
-</Grid>
 </Window>
